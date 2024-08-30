@@ -1,4 +1,5 @@
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import WaterfallChartOutlinedIcon from '@mui/icons-material/WaterfallChartOutlined';
 import { Breadcrumbs, CssBaseline } from '@mui/material';
@@ -39,6 +40,11 @@ const navigation: SideNavigationItem[] = [
     name: 'settings',
     to: '/app/settings',
     icon: <SettingsOutlinedIcon />,
+  },
+  {
+    name: 'counter',
+    to: '/app/counter',
+    icon: <HourglassBottomIcon />,
   },
 ];
 

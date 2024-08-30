@@ -43,6 +43,13 @@ export const createRouter = () =>
             return { Component: Setting };
           },
         },
+        {
+          path: 'counter',
+          lazy: async () => {
+            const { Counter } = await import('./app/counter/counter.tsx');
+            return { Component: Counter };
+          },
+        },
       ],
     },
     {
