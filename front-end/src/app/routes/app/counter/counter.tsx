@@ -1,9 +1,5 @@
-import { Typography } from '@mui/material';
+import CounterFeature from '@/features/counter/counter';
 
 export const Counter = () => {
-  return (
-    <Typography variant="h1" sx={{ py: 2 }}>
-      Counter
-    </Typography>
-  );
+  return <CounterFeature />;
 };

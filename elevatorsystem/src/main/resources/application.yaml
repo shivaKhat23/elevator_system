@@ -1,0 +1,31 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: farm-management-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elevator-system
+    username: root
+    password: root
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.ddl-auto: validate
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: false
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+  messages:
+    basename: i18n/messages
+  modulith:
+    republish-outstanding-events-on-restart: true
+    events:
+      externalization:
+        enabled: true
+server:
+  port: 8081
