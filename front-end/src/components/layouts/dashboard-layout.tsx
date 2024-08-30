@@ -26,14 +26,14 @@ interface SideNavigationItem {
 
 const navigation: SideNavigationItem[] = [
   {
-    name: 'admin',
-    to: '/app/admin',
-    icon: <CreateOutlinedIcon />,
-  },
-  {
     name: 'elevator',
     to: '/app/elevator',
     icon: <WaterfallChartOutlinedIcon />,
+  },
+  {
+    name: 'admin',
+    to: '/app/admin',
+    icon: <CreateOutlinedIcon />,
   },
   {
     name: 'settings',

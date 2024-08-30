@@ -12,6 +12,13 @@ export const createRouter = () =>
       },
     },
     {
+      path: '/callback',
+      lazy: async () => {
+        const { Callback } = await import('./callback.tsx');
+        return { Component: Callback };
+      },
+    },
+    {
       path: '/app',
       element: <RootApp />,
       children: [

@@ -12,7 +12,7 @@ export const Callback = () => {
   useEffect(() => {
     const fetchToken = async () => {
       dispatch(handleOAuthCallback(location.search)).then(() =>
-        navigate('/app', { replace: true }),
+        navigate('/app/elevator', { replace: true }),
       );
     };
 
