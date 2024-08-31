@@ -10,13 +10,12 @@ type AppProviderProps = {
   children: React.ReactNode;
 };
 
+const API_BASE_URL_WEB_SOCKET = import.meta.env.VITE_API_BASE_URL_WEB_SOCKET;
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <StompSessionProvider url={'http://localhost:8081/web-socket'}>
-          {children}
-        </StompSessionProvider>
+        <StompSessionProvider url={API_BASE_URL_WEB_SOCKET}>{children}</StompSessionProvider>
       </Provider>
     </ThemeProvider>
   );

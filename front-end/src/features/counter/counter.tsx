@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useSubscription } from 'react-stomp-hooks';
 
@@ -15,11 +15,24 @@ export default function CounterFeature() {
   });
 
   return (
-    <Paper sx={{ mt: 10, p: 2 }}>
-      <Typography>Count : {counter == null ? data?.count : counter}</Typography>
-      <Button variant="contained" onClick={() => startCounter()}>
-        Start Counter
-      </Button>
-    </Paper>
+    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Paper
+        sx={{
+          mt: 10,
+          p: 2,
+          width: '25%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="h1" textAlign={'center'}>
+          {counter == null ? data?.count : counter}
+        </Typography>
+        <Button variant="contained" onClick={() => startCounter()}>
+          Start Counter
+        </Button>
+      </Paper>
+    </Box>
   );
 }
