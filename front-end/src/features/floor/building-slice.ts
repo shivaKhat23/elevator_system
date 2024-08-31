@@ -12,4 +12,4 @@ export const buildingApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetBuildingsQuery, useGetFloorsQuery } = buildingApi;
+export const { useGetBuildingsQuery, useGetFloorsQuery, useLazyGetFloorsQuery } = buildingApi;

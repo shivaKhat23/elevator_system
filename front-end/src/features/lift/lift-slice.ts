@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { BASE_API_URL } from '@/config/redux/api-slice';
+import { RootState } from '@/config/redux/store';
 import {
   ErrorState,
   isSuccessState,
@@ -64,4 +65,10 @@ const liftSlice = createSlice({
 });
 
 export const { updateLift } = liftSlice.actions;
+export const selectLifts = (state: RootState) => {
+  if (isSuccessState(state.lift)) {
+    return (state.lift as SuccessState<ListResponse<Lift>>).data.content;
+  }
+};
+
 export default liftSlice.reducer;
