@@ -1,4 +1,4 @@
-package com.elevator.elevatorsystem.counter;
+package com.elevator.elevatorsystem.counterpoc;
 
 import java.time.LocalDateTime;
 

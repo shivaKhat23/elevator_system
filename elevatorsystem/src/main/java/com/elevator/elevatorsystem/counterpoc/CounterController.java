@@ -1,4 +1,4 @@
-package com.elevator.elevatorsystem.counter;
+package com.elevator.elevatorsystem.counterpoc;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

@@ -7,6 +7,7 @@ import {
   UserPoolClientIdentityProvider,
   UserPoolDomain,
   VerificationEmailStyle,
+  CfnUserPoolGroup,
 } from "aws-cdk-lib/aws-cognito";
 import { RegionInfo } from "aws-cdk-lib/region-info";
 import { Construct } from "constructs";
@@ -137,6 +138,20 @@ export class CognitoStack extends InfraBaseStack {
         custom: false,
       },
       disableOAuth: true,
+    });
+
+    const adminGroup = new CfnUserPoolGroup(this, "AdminGroup", {
+      groupName: "Admin",
+      userPoolId: userPool.userPoolId,
+      description: "Group for admins",
+      precedence: 1,
+    });
+
+    const usersGroup = new CfnUserPoolGroup(this, "UsersGroup", {
+      groupName: "User",
+      userPoolId: userPool.userPoolId,
+      description: "Group for general users",
+      precedence: 2,
     });
   }
 }
