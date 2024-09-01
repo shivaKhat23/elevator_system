@@ -30,17 +30,23 @@ public class LiftUtil {
         /**
          * If the lift is moving in the same direction or is idle, calculate the difference with the current floor of the lift.
          * If the lift is moving in the opposite direction, calculate the difference with the furthest destination floor of the lift.
+         * also, if it is opposite, diff is doubled
          */
         return lifts
                 .stream().min(Comparator
                         .comparing((Lift lift) -> {
                             LiftInfo liftInfo = liftToListInfo.get(lift);
                             int valueToCheckWith = lift.getCurrentFloor().getNumber();
+                            boolean opposite = false;
                             if ((liftInfo.status == LiftStatus.MOVING_UP && direction == LiftRequestDirection.DOWN)
                                     || (liftInfo.status == LiftStatus.MOVING_DOWN && direction == LiftRequestDirection.UP)) {
                                 valueToCheckWith = liftInfo.furthestFloor.getNumber();
+                                opposite = true;
                             }
-                            return Math.abs(valueToCheckWith - floor.getNumber());
+
+                            int diff = Math.abs(valueToCheckWith - floor.getNumber());
+                            // give idle more priority by reducing the diff by 0.5 ?
+                            return opposite ? 2 * diff : diff;
                         })).orElse(null);
     }
 
