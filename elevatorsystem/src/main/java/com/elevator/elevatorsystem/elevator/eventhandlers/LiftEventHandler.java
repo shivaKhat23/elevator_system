@@ -1,6 +1,7 @@
 package com.elevator.elevatorsystem.elevator.eventhandlers;
 
 import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestEvent;
+import com.elevator.elevatorsystem.elevator.controller.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.elevator.controller.mapper.LiftMapper;
 import com.elevator.elevatorsystem.elevator.domain.Floor;
 import com.elevator.elevatorsystem.elevator.domain.Lift;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Slf4j
 public class LiftEventHandler {
 
-    private final String topic = "/topic/%s/lift";
+    private final String TOPIC = "/topic/%s/lift";
     private final FloorService floorService;
     private final LiftService liftService;
     private final SimpMessagingTemplate messagingTemplate;
@@ -35,6 +36,34 @@ public class LiftEventHandler {
         this.liftService = liftService;
         this.messagingTemplate = messagingTemplate;
         this.liftMapper = liftMapper;
+    }
+
+    @Async
+    @EventListener
+    void handleLiftStopAdd(LiftStopAddEvent event) {
+        log.info("Handling LiftStopAddEvent: {} at thread: {}", event, Thread.currentThread());
+        // Fetch the requested floor
+        Optional<Floor> floorOptional = floorService.getFloor(event.floorId());
+        if (floorOptional.isEmpty()) {
+            log.info("Floor with id {} not found", event.floorId());
+            return;
+        }
+
+        Floor floor = floorOptional.get();
+        UUID buildingId = floor.getBuilding().getId();
+        String topic = String.format(TOPIC, buildingId);
+
+        Optional<Lift> liftOptional = liftService.getLiftById(event.liftId());
+        if (liftOptional.isEmpty()) {
+            log.info("Lift with id {} not found", event.liftId());
+            return;
+        }
+        Lift lift = liftOptional.get();
+        boolean stopAdded = lift.addStop(floor);
+        liftService.saveLift(lift);
+        if (stopAdded) {
+            sendLiftUpdate(lift, topic);
+        }
     }
 
     @Async
@@ -67,7 +96,7 @@ public class LiftEventHandler {
     private void processLiftMovement(Lift lift, Floor floor, UUID buildingId) throws InterruptedException {
         Integer floorNumberToGoto = floor.getNumber();
         Integer currentLiftFloorNumber = lift.getCurrentFloor().getNumber();
-        String buildingTopic = String.format(topic, buildingId);
+        String buildingTopic = String.format(TOPIC, buildingId);
 
         if (floorNumberToGoto.equals(currentLiftFloorNumber)) {
             handleIdleLift(lift, buildingTopic);

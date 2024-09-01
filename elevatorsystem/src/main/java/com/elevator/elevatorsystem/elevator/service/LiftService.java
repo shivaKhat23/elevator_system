@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,5 +27,9 @@ public class LiftService {
 
     public Lift saveLift(Lift lift) {
         return liftRepository.save(lift);
+    }
+
+    public Optional<Lift> getLiftById(UUID id) {
+        return liftRepository.findById(id);
     }
 }

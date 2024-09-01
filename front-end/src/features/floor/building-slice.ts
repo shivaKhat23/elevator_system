@@ -6,6 +6,11 @@ export type LiftRequest = {
   direction: LiftRequestDirection;
 };
 
+export type LiftFloorStop = {
+  floorId: string;
+  liftId: string;
+};
+
 export const buildingApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBuildings: builder.query<ListResponse<Building>, void>({
@@ -21,6 +26,12 @@ export const buildingApi = apiSlice.injectEndpoints({
         body: { direction: direction },
       }),
     }),
+    addFloorStop: builder.mutation<void, LiftFloorStop>({
+      query: ({ floorId, liftId }) => ({
+        url: `/floors/${floorId}/lifts/${liftId}/add-stop`,
+        method: 'PUT',
+      }),
+    }),
   }),
 });
 
@@ -29,4 +40,5 @@ export const {
   useGetFloorsQuery,
   useLazyGetFloorsQuery,
   useRequestLiftMutation,
+  useAddFloorStopMutation,
 } = buildingApi;

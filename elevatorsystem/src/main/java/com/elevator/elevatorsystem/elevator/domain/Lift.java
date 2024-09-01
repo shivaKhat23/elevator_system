@@ -44,5 +44,13 @@ public class Lift {
     @JoinColumn(name = "building_id")
     private Building building;
 
+    public boolean addStop(Floor stop) {
+        if (!floorStops.contains(stop)) {
+            floorStops.add(stop);
+            return true;
+        }
+        return false;
+    }
+
 
 }

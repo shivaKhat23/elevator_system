@@ -11,9 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import { Lift } from '@/types/types';
+import { Floor, Lift } from '@/types/types';
 
-import { useGetFloorsQuery } from '../floor/building-slice';
+import { useAddFloorStopMutation, useGetFloorsQuery } from '../floor/building-slice';
 import FLoorSelection from '../floor/floor-selection';
 
 import LiftStatusBar from './lift-status';
@@ -27,6 +27,11 @@ export type LiftInsideProps = {
 
 export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsideProps) {
   const { data, isSuccess } = useGetFloorsQuery(buildingId);
+  const [addFloorStop] = useAddFloorStopMutation();
+
+  const handleAddFloorStop = (floor: Floor) => {
+    addFloorStop({ floorId: floor.id, liftId: lift.id });
+  };
 
   const floors = isSuccess ? data.content : [];
   return (
@@ -57,7 +62,7 @@ export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsi
               floorSelectionMaxHeight="240px"
               floors={floors}
               selectedFloorNumbers={lift.floorStops}
-              selectFloor={() => null}
+              selectFloor={handleAddFloorStop}
             />
           </Box>
         </DialogContent>
@@ -76,24 +81,30 @@ type SelectedStopsProps = {
 };
 
 function SelectedStops({ stops }: SelectedStopsProps) {
+  const floorIsSelected = stops.length > 0;
   return (
     <Box sx={{ paddingY: 2 }}>
       <Typography>Selected Floors </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', maxHeight: '100px', gap: 1, overflow: 'auto' }}>
-        {stops.map((stop) => (
-          <Typography
-            variant="h6"
-            sx={{
-              padding: 0.5,
-              border: '2px solid black',
-              borderRadius: '10%',
-            }}
-            key={stop}
-          >
-            {stop}
-          </Typography>
-        ))}
-      </Box>
+      {!floorIsSelected && <Typography variant="subtitle2">No Floors Selected</Typography>}
+      {floorIsSelected && (
+        <Box
+          sx={{ display: 'flex', flexWrap: 'wrap', maxHeight: '100px', gap: 1, overflow: 'auto' }}
+        >
+          {stops.map((stop) => (
+            <Typography
+              variant="h6"
+              sx={{
+                padding: 0.5,
+                border: '2px solid black',
+                borderRadius: '10%',
+              }}
+              key={stop}
+            >
+              {stop}
+            </Typography>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }
