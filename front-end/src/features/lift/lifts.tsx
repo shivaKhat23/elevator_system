@@ -3,12 +3,13 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
 import { Floor, Lift, LiftStatus } from '@/types/types';
 
 import { getLifts, selectLifts } from './lift-slice';
+import LiftInside from './lift-inside';
 
 export type LiftsProps = {
   buildingId: string;
@@ -38,6 +39,7 @@ export type LiftItemProps = {
 };
 
 function LiftItem({ lift, currentFloor }: LiftItemProps) {
+  const [goInside, setGoInside] = useState<boolean>(false);
   const canDoorBeOpened =
     lift.currentFloorNumber === currentFloor.number && lift.status == LiftStatus.IDLE;
   return (
@@ -63,9 +65,15 @@ function LiftItem({ lift, currentFloor }: LiftItemProps) {
           <Typography variant="h4">{lift.currentFloorNumber}</Typography>
         </Box>
         <Box>
-          <Button variant="outlined" fullWidth disabled={!canDoorBeOpened}>
+          <Button
+            variant="outlined"
+            fullWidth
+            disabled={!canDoorBeOpened}
+            onClick={() => setGoInside(true)}
+          >
             {canDoorBeOpened ? 'Enter Lift' : 'Closed'}
           </Button>
+          <LiftInside open={goInside} setOpen={setGoInside} />
         </Box>
       </Box>
     </Paper>
