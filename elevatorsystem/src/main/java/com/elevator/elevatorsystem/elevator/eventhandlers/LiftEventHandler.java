@@ -42,14 +42,10 @@ public class LiftEventHandler {
     @EventListener
     void handleLiftStopAdd(LiftStopAddEvent event) throws InterruptedException {
         log.info("Handling LiftStopAddEvent: {} at thread: {}", event, Thread.currentThread());
-        // Fetch the requested floor
-        Optional<Floor> floorOptional = floorService.getFloor(event.floorId());
-        if (floorOptional.isEmpty()) {
-            log.info("Floor with id {} not found", event.floorId());
+        Floor floor = getFloorFromDB(event.floorId());
+        if (floor == null) {
             return;
         }
-
-        Floor floor = floorOptional.get();
         UUID buildingId = floor.getBuilding().getId();
         String topic = String.format(TOPIC, buildingId);
 
@@ -67,19 +63,26 @@ public class LiftEventHandler {
         }
     }
 
+    private Floor getFloorFromDB(UUID floorId) {
+        // Fetch the requested floor
+        Optional<Floor> floorOptional = floorService.getFloor(floorId);
+        if (floorOptional.isEmpty()) {
+            log.info("Floor with id {} not found", floorId);
+            return null;
+        }
+        return floorOptional.get();
+    }
+
     @Async
     @EventListener
     void handleLiftRequest(LiftRequestEvent liftRequestEvent) throws InterruptedException {
         log.info("Handling lift request: {} at thread: {}", liftRequestEvent, Thread.currentThread());
 
         // Fetch the requested floor
-        Optional<Floor> floorOptional = floorService.getFloor(liftRequestEvent.floorId());
-        if (floorOptional.isEmpty()) {
-            log.info("Floor with id {} not found", liftRequestEvent.floorId());
+        Floor floor = getFloorFromDB(liftRequestEvent.floorId());
+        if (floor == null) {
             return;
         }
-
-        Floor floor = floorOptional.get();
         UUID buildingId = floor.getBuilding().getId();
         List<Lift> lifts = liftService.getLiftsForBuilding(buildingId);
 
@@ -147,7 +150,12 @@ public class LiftEventHandler {
         for (int i = startFloor; i <= endFloor; i++) {
             // get fresh lift id, so that it has new data
             lift = getLiftFromDB(lift.getId());
-            updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
+            if (lift.getStatus() == LiftStatus.STAND_BY) {
+                lift.setStatus(LiftStatus.MOVING_UP);
+                liftService.saveLift(lift);
+                sendLiftUpdate(lift, buildingTopic);
+            }
+            updateLiftFloor(lift, i, buildingId, buildingTopic);
         }
     }
 
@@ -159,15 +167,21 @@ public class LiftEventHandler {
         for (int i = startFloor; i >= endFloor; i--) {
             // get fresh lift id, so that it has new data
             lift = getLiftFromDB(lift.getId());
-            updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
+            if (lift.getStatus() == LiftStatus.STAND_BY) {
+                lift.setStatus(LiftStatus.MOVING_DOWN);
+                liftService.saveLift(lift);
+                sendLiftUpdate(lift, buildingTopic);
+            }
+            updateLiftFloor(lift, i, buildingId, buildingTopic);
         }
     }
 
-    private void updateLiftFloor(Lift lift, int floorNumber, int endFloor, UUID buildingId, String buildingTopic) throws InterruptedException {
-        Optional<Floor> currentFloor = floorService.getByNumber(buildingId, floorNumber);
-        if (currentFloor.isPresent()) {
-            lift.setCurrentFloor(currentFloor.get());
-            if (floorNumber == endFloor) {
+    private void updateLiftFloor(Lift lift, int floorNumber, UUID buildingId, String buildingTopic) throws InterruptedException {
+        Optional<Floor> currentFloorOptional = floorService.getByNumber(buildingId, floorNumber);
+        if (currentFloorOptional.isPresent()) {
+            Floor currentFloor = currentFloorOptional.get();
+            lift.setCurrentFloor(currentFloor);
+            if (lift.hasStop(currentFloor)) {
                 floorService.getByNumber(buildingId, floorNumber).ifPresent(lift::removeStop);
                 if (lift.hasStops()) {
                     lift.setStatus(LiftStatus.STAND_BY);
@@ -179,8 +193,13 @@ public class LiftEventHandler {
             log.info("lift : {}, moved to floor number: {}", lift, floorNumber);
             sendLiftUpdate(lift, buildingTopic);
         }
-        // Simulate the time it takes to move between floors
-        Thread.sleep(Duration.ofSeconds(1));
+        if (lift.getStatus() == LiftStatus.STAND_BY) {
+            // simulate door opening and closing
+            Thread.sleep(Duration.ofSeconds(5));
+        } else {
+            // Simulate the time it takes to move between floors
+            Thread.sleep(Duration.ofSeconds(1));
+        }
     }
 
     private void sendLiftUpdate(Lift lift, String buildingTopic) {

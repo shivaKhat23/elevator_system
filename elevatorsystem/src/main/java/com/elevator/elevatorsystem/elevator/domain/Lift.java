@@ -60,5 +60,9 @@ public class Lift {
         return !getFloorStops().isEmpty();
     }
 
+    public boolean hasStop(Floor stop) {
+        return getFloorStops().contains(stop);
+    }
+
 
 }
