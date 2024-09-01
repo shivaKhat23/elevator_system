@@ -40,7 +40,7 @@ public class LiftEventHandler {
 
     @Async
     @EventListener
-    void handleLiftStopAdd(LiftStopAddEvent event) {
+    void handleLiftStopAdd(LiftStopAddEvent event) throws InterruptedException {
         log.info("Handling LiftStopAddEvent: {} at thread: {}", event, Thread.currentThread());
         // Fetch the requested floor
         Optional<Floor> floorOptional = floorService.getFloor(event.floorId());
@@ -63,6 +63,7 @@ public class LiftEventHandler {
         liftService.saveLift(lift);
         if (stopAdded) {
             sendLiftUpdate(lift, topic);
+            beginLiftMoment(lift.getId());
         }
     }
 
@@ -90,7 +91,32 @@ public class LiftEventHandler {
         }
 
         Lift lift = liftOptional.get();
-        processLiftMovement(lift, floor, buildingId);
+        handleLiftStopAdd(new LiftStopAddEvent(lift.getId(), floor.getId()));
+    }
+
+    private void beginLiftMoment(UUID liftId) throws InterruptedException {
+        Lift lift = getLiftFromDB(liftId);
+        if (lift == null) {
+            return;
+        }
+        if (lift.getStatus() == LiftStatus.IDLE) {
+            while (lift.hasStops()) {
+                processLiftMovement(lift, lift.getFloorStops().get(0), lift.getBuilding().getId());
+                // at then end of process verify that there is no stop left
+                lift = getLiftFromDB(liftId);
+            }
+        }
+
+    }
+
+    private Lift getLiftFromDB(UUID liftId) {
+        Optional<Lift> liftOptional = liftService.getLiftById(liftId);
+        if (liftOptional.isEmpty()) {
+            log.info("Lift with id {} not found", liftId);
+            return null;
+        }
+        Lift lift = liftOptional.get();
+        return lift;
     }
 
     private void processLiftMovement(Lift lift, Floor floor, UUID buildingId) throws InterruptedException {
@@ -119,6 +145,8 @@ public class LiftEventHandler {
         sendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i <= endFloor; i++) {
+            // get fresh lift id, so that it has new data
+            lift = getLiftFromDB(lift.getId());
             updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
         }
     }
@@ -129,6 +157,8 @@ public class LiftEventHandler {
         sendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i >= endFloor; i--) {
+            // get fresh lift id, so that it has new data
+            lift = getLiftFromDB(lift.getId());
             updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
         }
     }
@@ -138,7 +168,12 @@ public class LiftEventHandler {
         if (currentFloor.isPresent()) {
             lift.setCurrentFloor(currentFloor.get());
             if (floorNumber == endFloor) {
-                lift.setStatus(LiftStatus.IDLE);
+                floorService.getByNumber(buildingId, floorNumber).ifPresent(lift::removeStop);
+                if (lift.hasStops()) {
+                    lift.setStatus(LiftStatus.STAND_BY);
+                } else {
+                    lift.setStatus(LiftStatus.IDLE);
+                }
             }
             liftService.saveLift(lift);
             log.info("lift : {}, moved to floor number: {}", lift, floorNumber);

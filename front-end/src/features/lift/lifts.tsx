@@ -47,7 +47,8 @@ export type LiftItemProps = {
 function LiftItem({ buildingId, lift, currentFloor }: LiftItemProps) {
   const [goInside, setGoInside] = useState<boolean>(false);
   const canDoorBeOpened =
-    lift.currentFloorNumber === currentFloor.number && lift.status == LiftStatus.IDLE;
+    lift.currentFloorNumber === currentFloor.number &&
+    (lift.status == LiftStatus.IDLE || lift.status == LiftStatus.STAND_BY);
   return (
     <Paper sx={{ width: '30%' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, padding: 1 }}>

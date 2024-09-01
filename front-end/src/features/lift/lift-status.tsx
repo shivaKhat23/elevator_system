@@ -12,6 +12,7 @@ function getIconforLift(status: LiftStatus) {
     case LiftStatus.MOVING_DOWN:
       return <ArrowDownwardIcon fontSize="medium" />;
     case LiftStatus.IDLE:
+    case LiftStatus.STAND_BY:
     default:
       return <MultipleStopIcon fontSize="medium" />;
   }

@@ -18,6 +18,7 @@ export enum LiftStatus {
   MOVING_UP = 'MOVING_UP',
   MOVING_DOWN = 'MOVING_DOWN',
   IDLE = 'IDLE',
+  STAND_BY = 'STAND_BY',
 }
 
 export type Lift = {

@@ -45,11 +45,19 @@ public class Lift {
     private Building building;
 
     public boolean addStop(Floor stop) {
-        if (!floorStops.contains(stop)) {
+        if (!floorStops.contains(stop) && !stop.equals(currentFloor)) {
             floorStops.add(stop);
             return true;
         }
         return false;
+    }
+
+    public void removeStop(Floor stop) {
+        getFloorStops().remove(stop);
+    }
+
+    public boolean hasStops() {
+        return !getFloorStops().isEmpty();
     }
 
 
