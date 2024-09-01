@@ -103,7 +103,7 @@ public class LiftEventHandler {
             return;
         }
         if (lift.getStatus() == LiftStatus.IDLE) {
-            while (lift.hasStops()) {
+            while (lift != null && lift.hasStops()) {
                 processLiftMovement(lift, lift.getFloorStops().get(0), lift.getBuilding().getId());
                 // at then end of process verify that there is no stop left
                 lift = getLiftFromDB(liftId);
