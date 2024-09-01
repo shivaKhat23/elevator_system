@@ -93,7 +93,9 @@ export default function Floors({
           onChange={handleInputChange}
           type="number"
         />
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Box
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '600px', overflow: 'auto' }}
+        >
           {selectedFloors.map((floor) => (
             <FloorItem
               key={floor.id}

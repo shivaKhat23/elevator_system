@@ -1,11 +1,11 @@
 import { Box, Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import LoadingIndicator from '@/components/ui/loading-indicator/loading-indicator';
 import { useGetBuildingsQuery, useLazyGetFloorsQuery } from '@/features/floor/building-slice';
 import Floors from '@/features/floor/floors';
 import Lifts from '@/features/lift/lifts';
 import { Floor } from '@/types/types';
-import { useEffect, useState } from 'react';
 
 export const Elevator = () => {
   const [selectedBuilding, setSelectedBuildingId] = useState<string | undefined>();
@@ -54,7 +54,7 @@ export const Elevator = () => {
               bottom: 0,
               height: '100vh',
               overflow: 'hidden',
-              width: '420px',
+              width: '440px',
             }}
           >
             <Box sx={{ bgcolor: 'white', height: '100%', pt: 7.5 }}>
@@ -68,7 +68,7 @@ export const Elevator = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} style={{ marginLeft: '420px' }}>
+          <Grid item xs={12} style={{ marginLeft: '440px' }}>
             {!dataLoaded && <LoadingIndicator />}
             {dataLoaded && <Lifts buildingId={selectedBuilding} floor={selectedFloor} />}
           </Grid>
