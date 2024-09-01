@@ -1,5 +1,6 @@
 package com.elevator.elevatorsystem.elevator.eventhandlers;
 
+import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestDirection;
 import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestEvent;
 import com.elevator.elevatorsystem.elevator.controller.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.elevator.controller.mapper.LiftMapper;
@@ -87,14 +88,16 @@ public class LiftEventHandler {
         List<Lift> lifts = liftService.getLiftsForBuilding(buildingId);
 
         // Find an available lift
-        Optional<Lift> liftOptional = lifts.stream().findAny();
-        if (liftOptional.isEmpty()) {
-            log.warn("No lift available for building {}", buildingId);
+        Lift lift = getOptimalLift(lifts, floor, liftRequestEvent.direction());
+        if (lift == null) {
+            log.warn("No lift available for building at the moment");
             return;
         }
-
-        Lift lift = liftOptional.get();
         handleLiftStopAdd(new LiftStopAddEvent(lift.getId(), floor.getId()));
+    }
+
+    private Lift getOptimalLift(List<Lift> lifts, Floor floor, LiftRequestDirection direction) {
+        return LiftUtil.findOptimalLift(lifts, floor, direction);
     }
 
     private void beginLiftMoment(UUID liftId) throws InterruptedException {
