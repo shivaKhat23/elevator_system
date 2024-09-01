@@ -2,8 +2,9 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import { Box, Button, Divider, FormControl, MenuItem, Select, Typography } from '@mui/material';
 
-import { Building, Floor } from '@/types/types';
+import { Building, Floor, LiftRequestDirection } from '@/types/types';
 
+import { useRequestLiftMutation } from './building-slice';
 import FoorSelection from './floor-selection';
 
 export type FloorsProps = {
@@ -23,10 +24,16 @@ export default function Floors({
   selectedFloor,
   setSelectedFloor,
 }: FloorsProps) {
+  const [requestLift] = useRequestLiftMutation();
+
   const handleBuildingSelect = (event) => {
     const selectedBuildingId = event.target.value as string;
     console.log(selectedBuildingId);
     setSelectedBuildingId(selectedBuildingId);
+  };
+
+  const handleLiftRequest = (direction: LiftRequestDirection) => {
+    requestLift({ floorId: selectedFloor.id, direction: direction });
   };
 
   return (
@@ -55,10 +62,20 @@ export default function Floors({
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
         <Typography variant="h5">Call buttons</Typography>
         <Box sx={{ paddingY: 1, display: 'flex', gap: 1 }}>
-          <Button variant="outlined" size="large" sx={{ height: 120 }}>
+          <Button
+            variant="outlined"
+            size="large"
+            sx={{ height: 120 }}
+            onClick={() => handleLiftRequest(LiftRequestDirection.UP)}
+          >
             <KeyboardDoubleArrowUpIcon fontSize="large" />
           </Button>
-          <Button variant="outlined" size="large" sx={{ height: 120 }}>
+          <Button
+            variant="outlined"
+            size="large"
+            sx={{ height: 120 }}
+            onClick={() => handleLiftRequest(LiftRequestDirection.DOWN)}
+          >
             <KeyboardDoubleArrowDownIcon fontSize="large" />
           </Button>
         </Box>

@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
 import { Floor, Lift, LiftStatus } from '@/types/types';
 
+import { useSubscription } from 'react-stomp-hooks';
 import LiftInside from './lift-inside';
-import { getLifts, selectLifts } from './lift-slice';
+import { getLifts, selectLifts, updateLift } from './lift-slice';
 import LiftStatusBar from './lift-status';
 
 export type LiftsProps = {
@@ -21,6 +22,12 @@ export default function Lifts({ buildingId, floor }: LiftsProps) {
   useEffect(() => {
     dispatch(getLifts({ buildingId: buildingId }));
   }, [buildingId, dispatch]);
+
+  useSubscription(`/topic/${buildingId}/lift`, (message) => {
+    const lift: Lift = JSON.parse(message.body);
+    console.log(lift);
+    dispatch(updateLift(lift));
+  });
 
   return (
     <Box sx={{ pt: 7.5, px: 2, display: 'flex', gap: 2 }}>

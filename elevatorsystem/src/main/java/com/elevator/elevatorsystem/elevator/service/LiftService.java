@@ -23,4 +23,8 @@ public class LiftService {
     public List<Lift> getLiftsForBuilding(UUID buildingId) {
         return liftRepository.findAllByBuildingId(buildingId);
     }
+
+    public Lift saveLift(Lift lift) {
+        return liftRepository.save(lift);
+    }
 }

@@ -30,6 +30,11 @@ export type Lift = {
   buildingId: string;
 };
 
+export enum LiftRequestDirection {
+  UP = 'UP',
+  DOWN = 'DOWN',
+}
+
 // possible redux states
 export type LoadingState = {
   status: 'loading';

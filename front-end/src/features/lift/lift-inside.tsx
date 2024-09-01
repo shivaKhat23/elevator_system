@@ -29,7 +29,6 @@ export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsi
   const { data, isSuccess } = useGetFloorsQuery(buildingId);
 
   const floors = isSuccess ? data.content : [];
-  console.log(floors);
   return (
     <>
       <Dialog onClose={() => setOpen(false)} aria-labelledby="lift-name" open={open}>

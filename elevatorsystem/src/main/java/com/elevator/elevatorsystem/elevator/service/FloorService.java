@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,5 +23,13 @@ public class FloorService {
 
     public List<Floor> getFloorsForBuilding(UUID buildingId) {
         return floorRepository.findAllByBuildingIdOrderByNumber(buildingId);
+    }
+
+    public Optional<Floor> getFloor(UUID floorId) {
+        return floorRepository.findById(floorId);
+    }
+
+    public Optional<Floor> getByNumber(UUID buildingId, Integer number) {
+        return floorRepository.findByBuildingIdAndNumber(buildingId, number);
     }
 }

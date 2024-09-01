@@ -1,5 +1,10 @@
 import { apiSlice } from '@/config/redux/api-slice';
-import { Building, Floor, ListResponse } from '@/types/types';
+import { Building, Floor, LiftRequestDirection, ListResponse } from '@/types/types';
+
+export type LiftRequest = {
+  floorId: string;
+  direction: LiftRequestDirection;
+};
 
 export const buildingApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,7 +14,19 @@ export const buildingApi = apiSlice.injectEndpoints({
     getFloors: builder.query<ListResponse<Floor>, string>({
       query: (buildingId) => ({ url: `buildings/${buildingId}/floors` }),
     }),
+    requestLift: builder.mutation<void, LiftRequest>({
+      query: ({ floorId, direction }) => ({
+        url: `/floors/${floorId}/lift-request`,
+        method: 'POST',
+        body: { direction: direction },
+      }),
+    }),
   }),
 });
 
-export const { useGetBuildingsQuery, useGetFloorsQuery, useLazyGetFloorsQuery } = buildingApi;
+export const {
+  useGetBuildingsQuery,
+  useGetFloorsQuery,
+  useLazyGetFloorsQuery,
+  useRequestLiftMutation,
+} = buildingApi;

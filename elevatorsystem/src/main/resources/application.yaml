@@ -10,7 +10,7 @@ spring:
     password: root
   jpa:
     database: POSTGRESQL
-    show-sql: true
+    show-sql: false
     open-in-view: false
     properties:
       hibernate.jdbc.time_zone: UTC
