@@ -1,6 +1,6 @@
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { useEffect } from 'react';
@@ -80,6 +80,6 @@ function getIconforLift(status: LiftStatus) {
       return <ArrowDownwardIcon fontSize="medium" />;
     case LiftStatus.IDLE:
     default:
-      return <HorizontalRuleIcon fontSize="medium" />;
+      return <MultipleStopIcon fontSize="medium" />;
   }
 }
