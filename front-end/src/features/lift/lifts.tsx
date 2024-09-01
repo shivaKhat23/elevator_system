@@ -13,9 +13,10 @@ import LiftStatusBar from './lift-status';
 export type LiftsProps = {
   buildingId: string;
   floor: Floor;
+  setSelectedFloor: (value: Floor) => void;
 };
 
-export default function Lifts({ buildingId, floor }: LiftsProps) {
+export default function Lifts({ buildingId, floor, setSelectedFloor }: LiftsProps) {
   const lifts = useAppSelector(selectLifts) ?? [];
   const dispatch = useAppDispatch();
 
@@ -32,7 +33,13 @@ export default function Lifts({ buildingId, floor }: LiftsProps) {
   return (
     <Box sx={{ pt: 7.5, px: 2, display: 'flex', gap: 2 }}>
       {lifts.map((lift) => (
-        <LiftItem buildingId={buildingId} key={lift.id} lift={lift} currentFloor={floor} />
+        <LiftItem
+          buildingId={buildingId}
+          key={lift.id}
+          lift={lift}
+          currentFloor={floor}
+          setSelectedFloor={setSelectedFloor}
+        />
       ))}
     </Box>
   );
@@ -42,9 +49,10 @@ export type LiftItemProps = {
   buildingId: string;
   lift: Lift;
   currentFloor: Floor;
+  setSelectedFloor: (value: Floor) => void;
 };
 
-function LiftItem({ buildingId, lift, currentFloor }: LiftItemProps) {
+function LiftItem({ buildingId, lift, currentFloor, setSelectedFloor }: LiftItemProps) {
   const [goInside, setGoInside] = useState<boolean>(false);
   const canDoorBeOpened =
     lift.currentFloorNumber === currentFloor.number &&
@@ -66,7 +74,13 @@ function LiftItem({ buildingId, lift, currentFloor }: LiftItemProps) {
           >
             {canDoorBeOpened ? 'Enter Lift' : 'Closed'}
           </Button>
-          <LiftInside buildingId={buildingId} lift={lift} open={goInside} setOpen={setGoInside} />
+          <LiftInside
+            buildingId={buildingId}
+            lift={lift}
+            open={goInside}
+            setOpen={setGoInside}
+            setSelectedFloor={setSelectedFloor}
+          />
         </Box>
       </Box>
     </Paper>

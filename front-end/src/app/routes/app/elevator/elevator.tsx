@@ -70,7 +70,13 @@ export const Elevator = () => {
           </Grid>
           <Grid item xs={12} style={{ marginLeft: '440px' }}>
             {!dataLoaded && <LoadingIndicator />}
-            {dataLoaded && <Lifts buildingId={selectedBuilding} floor={selectedFloor} />}
+            {dataLoaded && (
+              <Lifts
+                buildingId={selectedBuilding}
+                floor={selectedFloor}
+                setSelectedFloor={setSelectedFloor}
+              />
+            )}
           </Grid>
         </>
       )}

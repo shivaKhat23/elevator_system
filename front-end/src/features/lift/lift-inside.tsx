@@ -23,14 +23,30 @@ export type LiftInsideProps = {
   lift: Lift;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
+  setSelectedFloor: (value: Floor) => void;
 };
 
-export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsideProps) {
+export default function LiftInside({
+  buildingId,
+  lift,
+  open,
+  setOpen,
+  setSelectedFloor,
+}: LiftInsideProps) {
   const { data, isSuccess } = useGetFloorsQuery(buildingId);
   const [addFloorStop] = useAddFloorStopMutation();
 
   const handleAddFloorStop = (floor: Floor) => {
     addFloorStop({ floorId: floor.id, liftId: lift.id });
+  };
+
+  const handleClose = () => {
+    setSelectedFloor({
+      id: lift.currentFloorId,
+      number: lift.currentFloorNumber,
+      buildingId: lift.buildingId,
+    });
+    setOpen(false);
   };
 
   const floors = isSuccess ? data.content : [];
@@ -67,9 +83,9 @@ export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsi
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Open Door</Button>
-          <Button onClick={() => setOpen(false)}>Close Door</Button>
-          <Button onClick={() => setOpen(false)}>Exit</Button>
+          {/* <Button onClick={() => setOpen(false)}>Open Door</Button>
+          <Button onClick={() => setOpen(false)}>Close Door</Button> */}
+          <Button onClick={handleClose}>Exit</Button>
         </DialogActions>
       </Dialog>
     </>
