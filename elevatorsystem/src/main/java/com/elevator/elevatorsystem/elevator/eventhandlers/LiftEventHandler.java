@@ -14,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class LiftEventHandler {
     @Async
     @EventListener
     void handleLiftRequest(LiftRequestEvent liftRequestEvent) throws InterruptedException {
-        log.info("Handling lift request: {}", liftRequestEvent);
+        log.info("Handling lift request: {} at thread: {}", liftRequestEvent, Thread.currentThread());
 
         // Fetch the requested floor
         Optional<Floor> floorOptional = floorService.getFloor(liftRequestEvent.floorId());
@@ -89,7 +90,7 @@ public class LiftEventHandler {
         sendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i <= endFloor; i++) {
-            updateLiftFloor(lift, i, buildingId, buildingTopic);
+            updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
         }
     }
 
@@ -99,23 +100,23 @@ public class LiftEventHandler {
         sendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i >= endFloor; i--) {
-            updateLiftFloor(lift, i, buildingId, buildingTopic);
+            updateLiftFloor(lift, i, endFloor, buildingId, buildingTopic);
         }
     }
 
-    private void updateLiftFloor(Lift lift, int floorNumber, UUID buildingId, String buildingTopic) throws InterruptedException {
+    private void updateLiftFloor(Lift lift, int floorNumber, int endFloor, UUID buildingId, String buildingTopic) throws InterruptedException {
         Optional<Floor> currentFloor = floorService.getByNumber(buildingId, floorNumber);
         if (currentFloor.isPresent()) {
             lift.setCurrentFloor(currentFloor.get());
-            if (floorNumber == lift.getCurrentFloor().getNumber()) {
+            if (floorNumber == endFloor) {
                 lift.setStatus(LiftStatus.IDLE);
             }
             liftService.saveLift(lift);
-            log.info("Updating lift: {}, at floor: {}", lift, lift.getCurrentFloor());
+            log.info("lift : {}, moved to floor number: {}", lift, floorNumber);
             sendLiftUpdate(lift, buildingTopic);
         }
         // Simulate the time it takes to move between floors
-        Thread.sleep(1000);
+        Thread.sleep(Duration.ofSeconds(1));
     }
 
     private void sendLiftUpdate(Lift lift, String buildingTopic) {

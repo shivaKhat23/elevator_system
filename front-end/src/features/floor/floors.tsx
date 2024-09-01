@@ -5,7 +5,7 @@ import { Box, Button, Divider, FormControl, MenuItem, Select, Typography } from 
 import { Building, Floor, LiftRequestDirection } from '@/types/types';
 
 import { useRequestLiftMutation } from './building-slice';
-import FoorSelection from './floor-selection';
+import FLoorSelection from './floor-selection';
 
 export type FloorsProps = {
   buildings: Building[];
@@ -51,10 +51,10 @@ export default function Floors({
       </Box>
       <Divider orientation="horizontal" sx={{ mt: 2 }} />
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
-        <FoorSelection
+        <FLoorSelection
           floorSelectionMaxHeight="320px"
           floors={floors}
-          selectedFloorId={selectedFloor?.id}
+          selectedFloorNumbers={selectedFloor?.number ? [selectedFloor.number] : []}
           selectFloor={setSelectedFloor}
         />
       </Box>

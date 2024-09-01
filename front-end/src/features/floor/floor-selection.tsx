@@ -30,14 +30,14 @@ function findNearestFloors(
 export type FloorSelectionProps = {
   floorSelectionMaxHeight: string;
   floors: Floor[];
-  selectedFloorId: string;
+  selectedFloorNumbers: number[];
   selectFloor: (value: Floor) => void;
 };
 
-export default function FoorSelection({
+export default function FLoorSelection({
   floorSelectionMaxHeight,
   floors,
-  selectedFloorId,
+  selectedFloorNumbers,
   selectFloor,
 }: FloorSelectionProps) {
   const [, startTransition] = useTransition();
@@ -48,7 +48,7 @@ export default function FoorSelection({
       setSearchedFloorNumber(Number.parseInt(value));
     });
   }
-  const selectedFloor = floors.find((floor) => floor.id === selectedFloorId);
+  const selectedFloor = floors.find((floor) => selectedFloorNumbers.includes(floor.number));
   const selectedFloors = findNearestFloors(floors, selectedFloor!, searchedFloorNumber);
   return (
     <>
@@ -73,7 +73,7 @@ export default function FoorSelection({
         {selectedFloors.map((floor) => (
           <FloorItem
             key={floor.id}
-            selectedFloorId={selectedFloorId}
+            selectedFloorNumbers={selectedFloorNumbers}
             floor={floor}
             selectFloor={selectFloor}
           />
@@ -84,18 +84,18 @@ export default function FoorSelection({
 }
 
 export type FloorItemProps = {
-  selectedFloorId: string;
+  selectedFloorNumbers: number[];
   floor: Floor;
   selectFloor: (value: Floor) => void;
 };
 
-function FloorItem({ selectedFloorId, floor, selectFloor }: FloorItemProps) {
+function FloorItem({ selectedFloorNumbers, floor, selectFloor }: FloorItemProps) {
   return (
     <Button
       sx={{
         p: 1,
         minWidth: 90,
-        backgroundColor: selectedFloorId === floor.id ? 'grey.300' : '',
+        backgroundColor: selectedFloorNumbers.includes(floor.number) ? 'grey.300' : '',
       }}
       variant="outlined"
       onClick={() => selectFloor(floor)}

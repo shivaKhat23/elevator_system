@@ -14,7 +14,7 @@ import {
 import { Lift } from '@/types/types';
 
 import { useGetFloorsQuery } from '../floor/building-slice';
-import FoorSelection from '../floor/floor-selection';
+import FLoorSelection from '../floor/floor-selection';
 
 import LiftStatusBar from './lift-status';
 
@@ -53,10 +53,10 @@ export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsi
           <SelectedStops stops={lift.floorStops} />
           <Divider />
           <Box sx={{ mt: 1 }}>
-            <FoorSelection
+            <FLoorSelection
               floorSelectionMaxHeight="240px"
               floors={floors}
-              selectedFloorId={lift.currentFloorId}
+              selectedFloorNumbers={lift.floorStops}
               selectFloor={() => null}
             />
           </Box>
