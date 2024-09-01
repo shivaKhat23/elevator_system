@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { Floor, Lift } from '@/types/types';
+import { Floor, Lift, LiftStatus } from '@/types/types';
 
 import { useAddFloorStopMutation, useGetFloorsQuery } from '../floor/building-slice';
 import FLoorSelection from '../floor/floor-selection';
@@ -50,6 +50,7 @@ export default function LiftInside({
   };
 
   const floors = isSuccess ? data.content : [];
+  const exitPossible = lift.status === LiftStatus.IDLE || lift.status === LiftStatus.STAND_BY;
   return (
     <>
       <Dialog onClose={() => setOpen(false)} aria-labelledby="lift-name" open={open}>
@@ -59,6 +60,7 @@ export default function LiftInside({
         <IconButton
           aria-label="close"
           onClick={() => setOpen(false)}
+          disabled={!exitPossible}
           sx={(theme) => ({
             position: 'absolute',
             right: 8,
@@ -85,7 +87,9 @@ export default function LiftInside({
         <DialogActions>
           {/* <Button onClick={() => setOpen(false)}>Open Door</Button>
           <Button onClick={() => setOpen(false)}>Close Door</Button> */}
-          <Button onClick={handleClose}>Exit</Button>
+          <Button onClick={handleClose} disabled={!exitPossible}>
+            Exit
+          </Button>
         </DialogActions>
       </Dialog>
     </>
