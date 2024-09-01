@@ -1,3 +1,5 @@
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import {
   Box,
   Button,
@@ -94,7 +96,7 @@ export default function Floors({
           type="number"
         />
         <Box
-          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '600px', overflow: 'auto' }}
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '320px', overflow: 'auto' }}
         >
           {selectedFloors.map((floor) => (
             <FloorItem
@@ -104,6 +106,18 @@ export default function Floors({
               setSelectedFloor={setSelectedFloor}
             />
           ))}
+        </Box>
+      </Box>
+      <Divider orientation="horizontal" sx={{ mt: 2 }} />
+      <Box sx={{ paddingX: 2, paddingY: 1 }}>
+        <Typography variant="h5">Call buttons</Typography>
+        <Box sx={{ paddingY: 1, display: 'flex', gap: 1 }}>
+          <Button variant="outlined" size="large" sx={{ height: 120 }}>
+            <KeyboardDoubleArrowUpIcon fontSize="large" />
+          </Button>
+          <Button variant="outlined" size="large" sx={{ height: 120 }}>
+            <KeyboardDoubleArrowDownIcon fontSize="large" />
+          </Button>
         </Box>
       </Box>
     </>

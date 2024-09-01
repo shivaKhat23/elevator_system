@@ -1,8 +1,13 @@
-import { Box, Typography } from '@mui/material';
-
-import { Floor, isSuccessState } from '@/types/types';
-import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import { Box, Button, Paper, Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import { useEffect } from 'react';
+
+import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
+import { Floor, Lift, LiftStatus } from '@/types/types';
+
 import { getLifts, selectLifts } from './lift-slice';
 
 export type LiftsProps = {
@@ -19,12 +24,62 @@ export default function Lifts({ buildingId, floor }: LiftsProps) {
   }, [buildingId, dispatch]);
 
   return (
-    <Box sx={{ pt: 7.5 }}>
-      <Typography>{buildingId}</Typography>
-      <Typography>{floor.number}</Typography>
+    <Box sx={{ pt: 7.5, px: 2, display: 'flex', gap: 2 }}>
       {lifts.map((lift) => (
-        <Typography key={lift.id}>{JSON.stringify(lift)}</Typography>
+        <LiftItem key={lift.id} lift={lift} currentFloor={floor} />
       ))}
     </Box>
   );
+}
+
+export type LiftItemProps = {
+  lift: Lift;
+  currentFloor: Floor;
+};
+
+function LiftItem({ lift, currentFloor }: LiftItemProps) {
+  const canDoorBeOpened =
+    lift.currentFloorNumber === currentFloor.number && lift.status == LiftStatus.IDLE;
+  return (
+    <Paper sx={{ width: '30%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, padding: 1 }}>
+        <Box sx={{ paddingX: 1, paddingTop: 1 }}>
+          <Typography variant="h5">{lift.name}</Typography>
+        </Box>
+        <Divider />
+        <Box
+          sx={{
+            backgroundColor: '#212121',
+            color: 'white',
+            width: '100%',
+            display: 'flex',
+            gap: 1,
+            justifyContent: 'center',
+            alignItems: 'baseline',
+            marginY: 1,
+          }}
+        >
+          {getIconforLift(lift.status)}
+          <Typography variant="h4">{lift.currentFloorNumber}</Typography>
+        </Box>
+        <Box>
+          <Button variant="outlined" fullWidth disabled={!canDoorBeOpened}>
+            {canDoorBeOpened ? 'Enter Lift' : 'Closed'}
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
+  );
+}
+
+function getIconforLift(status: LiftStatus) {
+  switch (status) {
+    case LiftStatus.MOVING_UP:
+      return <ArrowUpwardIcon fontSize="medium" />;
+    case LiftStatus.MOVING_DOWN:
+      return <ArrowDownwardIcon fontSize="medium" />;
+    case LiftStatus.IDLE:
+    default:
+      return <HorizontalRuleIcon fontSize="medium" />;
+  }
 }
