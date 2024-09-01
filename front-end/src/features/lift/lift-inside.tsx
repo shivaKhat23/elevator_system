@@ -1,25 +1,40 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
   Typography,
 } from '@mui/material';
 
+import { Lift } from '@/types/types';
+
+import { useGetFloorsQuery } from '../floor/building-slice';
+import FoorSelection from '../floor/floor-selection';
+
+import LiftStatusBar from './lift-status';
+
 export type LiftInsideProps = {
+  buildingId: string;
+  lift: Lift;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
 };
 
-export default function LiftInside({ open, setOpen }: LiftInsideProps) {
+export default function LiftInside({ buildingId, lift, open, setOpen }: LiftInsideProps) {
+  const { data, isSuccess } = useGetFloorsQuery(buildingId);
+
+  const floors = isSuccess ? data.content : [];
+  console.log(floors);
   return (
     <>
-      <Dialog onClose={() => setOpen(false)} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Modal title
+      <Dialog onClose={() => setOpen(false)} aria-labelledby="lift-name" open={open}>
+        <DialogTitle sx={{ m: 0, p: 2 }} id="lift-name">
+          {lift.name}
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -34,26 +49,52 @@ export default function LiftInside({ open, setOpen }: LiftInsideProps) {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-            scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-            auctor fringilla.
-          </Typography>
+          <LiftStatusBar lift={lift} />
+          <Divider />
+          <SelectedStops stops={lift.floorStops} />
+          <Divider />
+          <Box sx={{ mt: 1 }}>
+            <FoorSelection
+              floorSelectionMaxHeight="240px"
+              floors={floors}
+              selectedFloorId={lift.currentFloorId}
+              selectFloor={() => null}
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => setOpen(false)}>
-            Save changes
-          </Button>
+          <Button onClick={() => setOpen(false)}>Open Door</Button>
+          <Button onClick={() => setOpen(false)}>Close Door</Button>
+          <Button onClick={() => setOpen(false)}>Exit</Button>
         </DialogActions>
       </Dialog>
     </>
+  );
+}
+
+type SelectedStopsProps = {
+  stops: number[];
+};
+
+function SelectedStops({ stops }: SelectedStopsProps) {
+  return (
+    <Box sx={{ paddingY: 2 }}>
+      <Typography>Selected Floors </Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', maxHeight: '100px', gap: 1, overflow: 'auto' }}>
+        {stops.map((stop) => (
+          <Typography
+            variant="h6"
+            sx={{
+              padding: 0.5,
+              border: '2px solid black',
+              borderRadius: '10%',
+            }}
+            key={stop}
+          >
+            {stop}
+          </Typography>
+        ))}
+      </Box>
+    </Box>
   );
 }

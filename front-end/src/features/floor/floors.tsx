@@ -43,7 +43,14 @@ export default function Floors({
         </FormControl>
       </Box>
       <Divider orientation="horizontal" sx={{ mt: 2 }} />
-      <FoorSelection floors={floors} selectedFloor={selectedFloor} selectFloor={setSelectedFloor} />
+      <Box sx={{ paddingX: 2, paddingY: 1 }}>
+        <FoorSelection
+          floorSelectionMaxHeight="320px"
+          floors={floors}
+          selectedFloorId={selectedFloor?.id}
+          selectFloor={setSelectedFloor}
+        />
+      </Box>
       <Divider orientation="horizontal" sx={{ mt: 2 }} />
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
         <Typography variant="h5">Call buttons</Typography>

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+// eslint-disable-next-line import/no-cycle
 import liftReducer from '@/features/lift/lift-slice';
 import authReducer from '@/features/login/auth-slice';
 

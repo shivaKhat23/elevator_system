@@ -68,7 +68,7 @@ VALUES ('00000000-0000-0000-0000-000000000011', 'Lift A', 'IDLE',
 INSERT INTO elevator."lift_to_floor_stops" (lift_id, floor_id)
 SELECT '00000000-0000-0000-0000-000000000011', id
 FROM elevator.floor
-WHERE building_id = '00000000-0000-0000-0000-000000000001' LIMIT 1;
+WHERE building_id = '00000000-0000-0000-0000-000000000001';
 
 -- Building 2
 
@@ -102,7 +102,7 @@ VALUES ('00000000-0000-0000-0000-000000000022', 'Lift B2', 'IDLE',
 INSERT INTO elevator."lift_to_floor_stops" (lift_id, floor_id)
 SELECT '00000000-0000-0000-0000-000000000021', id
 FROM elevator."floor"
-WHERE building_id = '00000000-0000-0000-0000-000000000002' LIMIT 1;
+WHERE building_id = '00000000-0000-0000-0000-000000000002';
 
 -- Insert into 'lift_to_floor_stops' to map the second lift to all 100 floors in 'Building 2'
 INSERT INTO elevator."lift_to_floor_stops" (lift_id, floor_id)

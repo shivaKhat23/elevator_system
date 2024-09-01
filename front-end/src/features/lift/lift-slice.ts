@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { BASE_API_URL } from '@/config/redux/api-slice';
+// eslint-disable-next-line import/no-cycle
 import { RootState } from '@/config/redux/store';
 import {
   ErrorState,

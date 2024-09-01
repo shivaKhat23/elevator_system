@@ -6,7 +6,7 @@ import { CounterResponse, useGetCounterQuery, useStartCounterMutation } from './
 
 export default function CounterFeature() {
   const [counter, setCount] = useState<number | null>(null);
-  const { data, isLoading, isError } = useGetCounterQuery();
+  const { data } = useGetCounterQuery();
   const [startCounter] = useStartCounterMutation();
 
   useSubscription('/topic/counter', (message) => {

@@ -28,12 +28,18 @@ function findNearestFloors(
 }
 
 export type FloorSelectionProps = {
+  floorSelectionMaxHeight: string;
   floors: Floor[];
-  selectedFloor: Floor;
+  selectedFloorId: string;
   selectFloor: (value: Floor) => void;
 };
 
-export default function FoorSelection({ floors, selectedFloor, selectFloor }: FloorSelectionProps) {
+export default function FoorSelection({
+  floorSelectionMaxHeight,
+  floors,
+  selectedFloorId,
+  selectFloor,
+}: FloorSelectionProps) {
   const [, startTransition] = useTransition();
   const [searchedFloorNumber, setSearchedFloorNumber] = useState<number | undefined>();
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -42,10 +48,10 @@ export default function FoorSelection({ floors, selectedFloor, selectFloor }: Fl
       setSearchedFloorNumber(Number.parseInt(value));
     });
   }
-
-  const selectedFloors = findNearestFloors(floors, selectedFloor, searchedFloorNumber);
+  const selectedFloor = floors.find((floor) => floor.id === selectedFloorId);
+  const selectedFloors = findNearestFloors(floors, selectedFloor!, searchedFloorNumber);
   return (
-    <Box sx={{ paddingX: 2, paddingY: 1 }}>
+    <>
       <TextField
         sx={{ mb: 1 }}
         label="Search Floor"
@@ -55,33 +61,41 @@ export default function FoorSelection({ floors, selectedFloor, selectFloor }: Fl
         onChange={handleInputChange}
         type="number"
       />
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '320px', overflow: 'auto' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+          maxHeight: floorSelectionMaxHeight,
+          overflow: 'auto',
+        }}
+      >
         {selectedFloors.map((floor) => (
           <FloorItem
             key={floor.id}
-            selectedFloor={selectedFloor}
+            selectedFloorId={selectedFloorId}
             floor={floor}
             selectFloor={selectFloor}
           />
         ))}
       </Box>
-    </Box>
+    </>
   );
 }
 
 export type FloorItemProps = {
-  selectedFloor: Floor;
+  selectedFloorId: string;
   floor: Floor;
   selectFloor: (value: Floor) => void;
 };
 
-function FloorItem({ selectedFloor, floor, selectFloor }: FloorItemProps) {
+function FloorItem({ selectedFloorId, floor, selectFloor }: FloorItemProps) {
   return (
     <Button
       sx={{
         p: 1,
         minWidth: 90,
-        backgroundColor: selectedFloor?.id === floor.id ? 'grey.300' : '',
+        backgroundColor: selectedFloorId === floor.id ? 'grey.300' : '',
       }}
       variant="outlined"
       onClick={() => selectFloor(floor)}
