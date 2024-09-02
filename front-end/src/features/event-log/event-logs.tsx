@@ -1,14 +1,15 @@
-import { useEffect, useMemo } from 'react';
-
-import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
-
-import LoadingIndicator from '@/components/ui/loading-indicator/loading-indicator';
-import { EventLog, EventType, Floor, Lift } from '@/types/types';
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { useEffect, useMemo } from 'react';
 import { useSubscription } from 'react-stomp-hooks';
+
+import LoadingIndicator from '@/components/ui/loading-indicator/loading-indicator';
+import { useAppDispatch, useAppSelector } from '@/config/redux/hook';
+import { EventLog, EventType, Floor, Lift } from '@/types/types';
+
 import { useGetFloorsQuery } from '../floor/building-slice';
 import { getLifts, selectLifts } from '../lift/lift-slice';
+
 import { addEventLog, getEventLogs, selectEventLogs } from './event-log-slice';
 export type EventLogsProps = {
   buildingId: string;
@@ -30,7 +31,7 @@ export default function EventLogs({ buildingId }: EventLogsProps) {
   const dispatch = useAppDispatch();
 
   const liftIdToLift = useMemo(() => convertToMap(lifts), [lifts]);
-  const floorIdToFloor = useMemo(() => convertToMap(floors), [lifts]);
+  const floorIdToFloor = useMemo(() => convertToMap(floors), [floors]);
 
   useEffect(() => {
     dispatch(getEventLogs({ buildingId }));

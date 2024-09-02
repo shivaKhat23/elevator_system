@@ -1,12 +1,12 @@
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import { Box, Button, Divider, FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { Box, Button, Divider, Typography } from '@mui/material';
 
 import { Building, Floor, LiftRequestDirection } from '@/types/types';
 
+import BuildingSelect from './building-select';
 import { useRequestLiftMutation } from './building-slice';
 import FLoorSelection from './floor-selection';
-import BuildingSelect from './building-select';
 
 export type FloorsProps = {
   buildings: Building[];
