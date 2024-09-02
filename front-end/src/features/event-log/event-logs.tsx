@@ -6,16 +6,17 @@ import LoadingIndicator from '@/components/ui/loading-indicator/loading-indicato
 import { EventLog, EventType, Floor, Lift } from '@/types/types';
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { useSubscription } from 'react-stomp-hooks';
 import { useGetFloorsQuery } from '../floor/building-slice';
 import { getLifts, selectLifts } from '../lift/lift-slice';
-import { getEventLogs, selectEventLogs } from './event-log-slice';
+import { addEventLog, getEventLogs, selectEventLogs } from './event-log-slice';
 export type EventLogsProps = {
   buildingId: string;
 };
 
 function convertToMap<T extends { id: string }>(items: T[]): Map<string, T> {
   const map = new Map<string, T>();
-  for (let item of items) {
+  for (const item of items) {
     map.set(item.id, item);
   }
   return map;
@@ -37,6 +38,12 @@ export default function EventLogs({ buildingId }: EventLogsProps) {
       dispatch(getLifts({ buildingId }));
     }
   }, [buildingId, dispatch, lifts.length]);
+
+  useSubscription(`/topic/${buildingId}/event-log`, (message) => {
+    const eventLog: EventLog = JSON.parse(message.body);
+    console.log(eventLog);
+    dispatch(addEventLog(eventLog));
+  });
 
   const dataLoaded = lifts.length > 0 && floors.length > 0;
 
