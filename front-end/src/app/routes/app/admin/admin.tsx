@@ -1,7 +1,8 @@
-import { Box, Grid } from '@mui/material';
+import { Box, Divider, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import LoadingIndicator from '@/components/ui/loading-indicator/loading-indicator';
+import EventLogs from '@/features/event-log/event-logs';
 import BuildingSelect from '@/features/floor/building-select';
 import { useGetBuildingsQuery } from '@/features/floor/building-slice';
 import Lifts from '@/features/lift/lifts';
@@ -43,6 +44,10 @@ export const Admin = () => {
                   selectedBuilding={selectedBuilding as string}
                   setSelectedBuildingId={setSelectedBuildingId}
                 />
+              </Box>
+              <Divider />
+              <Box sx={{ paddingX: 2, paddingY: 1 }}>
+                <EventLogs buildingId={selectedBuilding} />
               </Box>
             </Box>
           </Grid>

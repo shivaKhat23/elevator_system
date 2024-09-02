@@ -93,7 +93,7 @@ public class LiftEventHandler {
             log.warn("No lift available for building at the moment");
             return;
         }
-        handleLiftStopAdd(new LiftStopAddEvent(lift.getId(), floor.getId()));
+        handleLiftStopAdd(new LiftStopAddEvent(liftRequestEvent.buildingId(), lift.getId(), floor.getId()));
     }
 
     private Lift getOptimalLift(List<Lift> lifts, Floor floor, LiftRequestDirection direction) {

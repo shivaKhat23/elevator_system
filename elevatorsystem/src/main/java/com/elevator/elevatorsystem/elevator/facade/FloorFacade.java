@@ -37,8 +37,10 @@ public class FloorFacade {
 
     public void performListRequest(UUID floorId, LiftRequestedDto liftRequestedDto) {
         var liftRequestDirection = LiftRequestDirection.valueOf(liftRequestedDto.getDirection());
-        LiftRequestEvent liftRequestEvent = new LiftRequestEvent(floorId, liftRequestDirection);
-        log.info("Lift requested : {}", liftRequestEvent);
-        publisher.publishEvent(liftRequestEvent);
+        floorService.getFloor(floorId).ifPresent(floor -> {
+            LiftRequestEvent liftRequestEvent = new LiftRequestEvent(floor.getBuilding().getId(), floorId, liftRequestDirection);
+            log.info("Lift requested : {}", liftRequestEvent);
+            publisher.publishEvent(liftRequestEvent);
+        });
     }
 }
