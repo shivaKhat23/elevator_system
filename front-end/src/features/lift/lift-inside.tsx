@@ -8,7 +8,6 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  Typography,
 } from '@mui/material';
 
 import { Floor, Lift, LiftStatus } from '@/types/types';
@@ -17,6 +16,7 @@ import { useAddFloorStopMutation, useGetFloorsQuery } from '../floor/building-sl
 import FLoorSelection from '../floor/floor-selection';
 
 import LiftStatusBar from './lift-status';
+import SelectedStops from './selected-stops';
 
 export type LiftInsideProps = {
   buildingId: string;
@@ -24,6 +24,7 @@ export type LiftInsideProps = {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   setSelectedFloor: (value: Floor) => void;
+  isAdminView: boolean;
 };
 
 export default function LiftInside({
@@ -32,6 +33,7 @@ export default function LiftInside({
   open,
   setOpen,
   setSelectedFloor,
+  isAdminView,
 }: LiftInsideProps) {
   const { data, isSuccess } = useGetFloorsQuery(buildingId);
   const [addFloorStop] = useAddFloorStopMutation();
@@ -41,11 +43,13 @@ export default function LiftInside({
   };
 
   const handleClose = () => {
-    setSelectedFloor({
-      id: lift.currentFloorId,
-      number: lift.currentFloorNumber,
-      buildingId: lift.buildingId,
-    });
+    if (!isAdminView) {
+      setSelectedFloor({
+        id: lift.currentFloorId,
+        number: lift.currentFloorNumber,
+        buildingId: lift.buildingId,
+      });
+    }
     setOpen(false);
   };
 
@@ -85,46 +89,11 @@ export default function LiftInside({
           </Box>
         </DialogContent>
         <DialogActions>
-          {/* <Button onClick={() => setOpen(false)}>Open Door</Button>
-          <Button onClick={() => setOpen(false)}>Close Door</Button> */}
           <Button onClick={handleClose} disabled={!exitPossible}>
             Exit
           </Button>
         </DialogActions>
       </Dialog>
     </>
-  );
-}
-
-type SelectedStopsProps = {
-  stops: number[];
-};
-
-function SelectedStops({ stops }: SelectedStopsProps) {
-  const floorIsSelected = stops.length > 0;
-  return (
-    <Box sx={{ paddingY: 2 }}>
-      <Typography>Selected Floors </Typography>
-      {!floorIsSelected && <Typography variant="subtitle2">No Floors Selected</Typography>}
-      {floorIsSelected && (
-        <Box
-          sx={{ display: 'flex', flexWrap: 'wrap', maxHeight: '100px', gap: 1, overflow: 'auto' }}
-        >
-          {stops.map((stop) => (
-            <Typography
-              variant="h6"
-              sx={{
-                padding: 0.5,
-                border: '2px solid black',
-                borderRadius: '10%',
-              }}
-              key={stop}
-            >
-              {stop}
-            </Typography>
-          ))}
-        </Box>
-      )}
-    </Box>
   );
 }

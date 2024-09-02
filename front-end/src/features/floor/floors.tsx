@@ -6,6 +6,7 @@ import { Building, Floor, LiftRequestDirection } from '@/types/types';
 
 import { useRequestLiftMutation } from './building-slice';
 import FLoorSelection from './floor-selection';
+import BuildingSelect from './building-select';
 
 export type FloorsProps = {
   buildings: Building[];
@@ -26,12 +27,6 @@ export default function Floors({
 }: FloorsProps) {
   const [requestLift] = useRequestLiftMutation();
 
-  const handleBuildingSelect = (event) => {
-    const selectedBuildingId = event.target.value as string;
-    console.log(selectedBuildingId);
-    setSelectedBuildingId(selectedBuildingId);
-  };
-
   const handleLiftRequest = (direction: LiftRequestDirection) => {
     requestLift({ floorId: selectedFloor.id, direction: direction });
   };
@@ -39,15 +34,11 @@ export default function Floors({
   return (
     <>
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
-        <FormControl fullWidth>
-          <Select id="building-select" value={selectedBuilding} onChange={handleBuildingSelect}>
-            {buildings.map((building) => (
-              <MenuItem key={building.id} value={building.id}>
-                {building.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <BuildingSelect
+          buildings={buildings}
+          selectedBuilding={selectedBuilding}
+          setSelectedBuildingId={setSelectedBuildingId}
+        />
       </Box>
       <Divider orientation="horizontal" sx={{ mt: 2 }} />
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
