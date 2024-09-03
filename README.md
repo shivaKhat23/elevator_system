@@ -54,5 +54,7 @@
 #### Video
 
 ##### Example with 1 Lift
+[![System with 1 Lift](https://github.com/shivaKhat23/elevator_system/blob/main/media/one_lift.mp4)](https://github.com/shivaKhat23/elevator_system/blob/main/media/one_lift.mp4)
 
 ##### Example with 2 Lift
+[![System with 2 lift](https://github.com/shivaKhat23/elevator_system/blob/main/media/two_lift.mp4)](https://github.com/shivaKhat23/elevator_system/blob/main/media/two_lift.mp4)
