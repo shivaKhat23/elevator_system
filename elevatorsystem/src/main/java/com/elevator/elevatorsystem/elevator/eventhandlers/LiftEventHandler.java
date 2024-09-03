@@ -18,6 +18,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 @Slf4j
@@ -28,6 +30,10 @@ public class LiftEventHandler {
     private final LiftService liftService;
     private final SimpMessagingTemplate messagingTemplate;
     private final LiftMapper liftMapper;
+
+    // Use ReentrantLock instead of synchronized because synchronized may not work properly with virtual threads
+    private final ConcurrentHashMap<UUID, ReentrantLock> liftLocks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, ReentrantLock> optimalLiftLocks = new ConcurrentHashMap<>();
 
     @Autowired
     public LiftEventHandler(FloorService floorService, LiftService liftService, SimpMessagingTemplate messagingTemplate, LiftMapper liftMapper) {
@@ -46,10 +52,18 @@ public class LiftEventHandler {
     }
 
     private Lift getLiftFromDB(UUID liftId) {
-        return liftService.getLiftById(liftId).orElseGet(() -> {
-            log.info("Lift with id {} not found", liftId);
-            return null;
-        });
+        ReentrantLock lock = liftLocks.computeIfAbsent(liftId, id -> new ReentrantLock());
+
+        lock.lock();
+        try {
+            return liftService.getLiftById(liftId).orElseGet(() -> {
+                log.info("Lift with id {} not found", liftId);
+                return null;
+            });
+        } finally {
+            lock.unlock();
+            liftLocks.remove(liftId);
+        }
     }
 
     @ApplicationModuleListener
@@ -84,16 +98,26 @@ public class LiftEventHandler {
             return;
         }
         UUID buildingId = floor.getBuilding().getId();
-        List<Lift> lifts = liftService.getLiftsForBuilding(buildingId);
 
-        // Find an available lift
-        Lift lift = LiftUtil.findOptimalLift(lifts, floor, liftRequestEvent.direction());
-        if (lift == null) {
+        // make sure optimal lift is only calculated 1 at a time per building
+        ReentrantLock reentrantLock = optimalLiftLocks.computeIfAbsent(buildingId, id -> new ReentrantLock());
+        reentrantLock.lock();
+        Lift optimalLift;
+        try {
+            List<Lift> lifts = liftService.getLiftsForBuilding(buildingId);
+
+            // Find an available lift
+            optimalLift = LiftUtil.findOptimalLift(lifts, floor, liftRequestEvent.direction());
+        } finally {
+            reentrantLock.unlock();
+            optimalLiftLocks.remove(buildingId);
+        }
+        if (optimalLift == null) {
             // Normally, it will always return lift, unless there is no lift available in the Building
             log.warn("No lift available for building at the moment");
             return;
         }
-        handleLiftStopAdd(new LiftStopAddEvent(liftRequestEvent.buildingId(), lift.getId(), floor.getId()));
+        handleLiftStopAdd(new LiftStopAddEvent(liftRequestEvent.buildingId(), optimalLift.getId(), floor.getId()));
     }
 
     private void beginLiftMoment(UUID liftId) throws InterruptedException {
@@ -186,8 +210,16 @@ public class LiftEventHandler {
     }
 
     private void saveAndSendLiftUpdate(Lift lift, String buildingTopic) {
-        liftService.saveLift(lift);
-        messagingTemplate.convertAndSend(buildingTopic, liftMapper.toDto(lift));
+        ReentrantLock lock = liftLocks.computeIfAbsent(lift.getId(), id -> new ReentrantLock());
+
+        lock.lock();
+        try {
+            liftService.saveLift(lift);
+            messagingTemplate.convertAndSend(buildingTopic, liftMapper.toDto(lift));
+        } finally {
+            lock.unlock();
+            liftLocks.remove(lift.getId());
+        }
     }
 }
 
