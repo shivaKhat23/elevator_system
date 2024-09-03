@@ -4,7 +4,6 @@ import com.elevator.elevatorsystem.elevator.controller.mapper.LiftMapper;
 import com.elevator.elevatorsystem.elevator.domain.Floor;
 import com.elevator.elevatorsystem.elevator.domain.Lift;
 import com.elevator.elevatorsystem.elevator.domain.LiftStatus;
-import com.elevator.elevatorsystem.elevator.event.LiftRequestDirection;
 import com.elevator.elevatorsystem.elevator.event.LiftRequestEvent;
 import com.elevator.elevatorsystem.elevator.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.elevator.service.FloorService;
@@ -38,7 +37,22 @@ public class LiftEventHandler {
         this.liftMapper = liftMapper;
     }
 
-    @ApplicationModuleListener()
+    private Floor getFloorFromDB(UUID floorId) {
+        // Fetch the requested floor
+        return floorService.getFloor(floorId).orElseGet(() -> {
+            log.info("Floor with id {} not found", floorId);
+            return null;
+        });
+    }
+
+    private Lift getLiftFromDB(UUID liftId) {
+        return liftService.getLiftById(liftId).orElseGet(() -> {
+            log.info("Lift with id {} not found", liftId);
+            return null;
+        });
+    }
+
+    @ApplicationModuleListener
     void handleLiftStopAdd(LiftStopAddEvent event) throws InterruptedException {
         log.info("Handling LiftStopAddEvent: {} at thread: {}", event, Thread.currentThread());
         Floor floor = getFloorFromDB(event.floorId());
@@ -48,29 +62,17 @@ public class LiftEventHandler {
         UUID buildingId = floor.getBuilding().getId();
         String topic = String.format(TOPIC, buildingId);
 
-        Optional<Lift> liftOptional = liftService.getLiftById(event.liftId());
-        if (liftOptional.isEmpty()) {
-            log.info("Lift with id {} not found", event.liftId());
+        Lift lift = getLiftFromDB(event.liftId());
+        if (lift == null) {
             return;
         }
-        Lift lift = liftOptional.get();
         boolean stopAdded = lift.addStop(floor);
-        liftService.saveLift(lift);
         if (stopAdded) {
-            sendLiftUpdate(lift, topic);
+            saveAndSendLiftUpdate(lift, topic);
             beginLiftMoment(lift.getId());
         }
     }
 
-    private Floor getFloorFromDB(UUID floorId) {
-        // Fetch the requested floor
-        Optional<Floor> floorOptional = floorService.getFloor(floorId);
-        if (floorOptional.isEmpty()) {
-            log.info("Floor with id {} not found", floorId);
-            return null;
-        }
-        return floorOptional.get();
-    }
 
     @ApplicationModuleListener
     void handleLiftRequest(LiftRequestEvent liftRequestEvent) throws InterruptedException {
@@ -85,16 +87,13 @@ public class LiftEventHandler {
         List<Lift> lifts = liftService.getLiftsForBuilding(buildingId);
 
         // Find an available lift
-        Lift lift = getOptimalLift(lifts, floor, liftRequestEvent.direction());
+        Lift lift = LiftUtil.findOptimalLift(lifts, floor, liftRequestEvent.direction());
         if (lift == null) {
+            // Normally, it will always return lift, unless there is no lift available in the Building
             log.warn("No lift available for building at the moment");
             return;
         }
         handleLiftStopAdd(new LiftStopAddEvent(liftRequestEvent.buildingId(), lift.getId(), floor.getId()));
-    }
-
-    private Lift getOptimalLift(List<Lift> lifts, Floor floor, LiftRequestDirection direction) {
-        return LiftUtil.findOptimalLift(lifts, floor, direction);
     }
 
     private void beginLiftMoment(UUID liftId) throws InterruptedException {
@@ -110,16 +109,6 @@ public class LiftEventHandler {
             }
         }
 
-    }
-
-    private Lift getLiftFromDB(UUID liftId) {
-        Optional<Lift> liftOptional = liftService.getLiftById(liftId);
-        if (liftOptional.isEmpty()) {
-            log.info("Lift with id {} not found", liftId);
-            return null;
-        }
-        Lift lift = liftOptional.get();
-        return lift;
     }
 
     private void processLiftMovement(Lift lift, Floor floor, UUID buildingId) throws InterruptedException {
@@ -138,22 +127,19 @@ public class LiftEventHandler {
 
     private void handleIdleLift(Lift lift, String buildingTopic) {
         lift.setStatus(LiftStatus.IDLE);
-        liftService.saveLift(lift);
-        sendLiftUpdate(lift, buildingTopic);
+        saveAndSendLiftUpdate(lift, buildingTopic);
     }
 
     private void moveLiftUp(Lift lift, int startFloor, int endFloor, UUID buildingId, String buildingTopic) throws InterruptedException {
         lift.setStatus(LiftStatus.MOVING_UP);
-        liftService.saveLift(lift);
-        sendLiftUpdate(lift, buildingTopic);
+        saveAndSendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i <= endFloor; i++) {
             // get fresh lift id, so that it has new data
             lift = getLiftFromDB(lift.getId());
             if (lift.getStatus() == LiftStatus.STAND_BY) {
                 lift.setStatus(LiftStatus.MOVING_UP);
-                liftService.saveLift(lift);
-                sendLiftUpdate(lift, buildingTopic);
+                saveAndSendLiftUpdate(lift, buildingTopic);
             }
             updateLiftFloor(lift, i, buildingId, buildingTopic);
         }
@@ -161,16 +147,14 @@ public class LiftEventHandler {
 
     private void moveLiftDown(Lift lift, int startFloor, int endFloor, UUID buildingId, String buildingTopic) throws InterruptedException {
         lift.setStatus(LiftStatus.MOVING_DOWN);
-        liftService.saveLift(lift);
-        sendLiftUpdate(lift, buildingTopic);
+        saveAndSendLiftUpdate(lift, buildingTopic);
 
         for (int i = startFloor; i >= endFloor; i--) {
             // get fresh lift id, so that it has new data
             lift = getLiftFromDB(lift.getId());
             if (lift.getStatus() == LiftStatus.STAND_BY) {
                 lift.setStatus(LiftStatus.MOVING_DOWN);
-                liftService.saveLift(lift);
-                sendLiftUpdate(lift, buildingTopic);
+                saveAndSendLiftUpdate(lift, buildingTopic);
             }
             updateLiftFloor(lift, i, buildingId, buildingTopic);
         }
@@ -189,9 +173,8 @@ public class LiftEventHandler {
                     lift.setStatus(LiftStatus.IDLE);
                 }
             }
-            liftService.saveLift(lift);
             log.info("lift : {}, moved to floor number: {}", lift, floorNumber);
-            sendLiftUpdate(lift, buildingTopic);
+            saveAndSendLiftUpdate(lift, buildingTopic);
         }
         if (lift.getStatus() == LiftStatus.STAND_BY) {
             // simulate door opening and closing
@@ -202,7 +185,8 @@ public class LiftEventHandler {
         }
     }
 
-    private void sendLiftUpdate(Lift lift, String buildingTopic) {
+    private void saveAndSendLiftUpdate(Lift lift, String buildingTopic) {
+        liftService.saveLift(lift);
         messagingTemplate.convertAndSend(buildingTopic, liftMapper.toDto(lift));
     }
 }
