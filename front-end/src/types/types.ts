@@ -1,4 +1,3 @@
-// this is a sample file to preserve project structure
 export type ListResponse<T> = {
   content: T[];
 };

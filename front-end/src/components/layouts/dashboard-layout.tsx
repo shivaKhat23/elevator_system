@@ -41,11 +41,11 @@ const navigation: SideNavigationItem[] = [
     to: '/app/settings',
     icon: <SettingsOutlinedIcon />,
   },
-  {
-    name: 'counter',
-    to: '/app/counter',
-    icon: <HourglassBottomIcon />,
-  },
+  // {
+  //   name: 'counter',
+  //   to: '/app/counter',
+  //   icon: <HourglassBottomIcon />,
+  // },
 ];
 
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
