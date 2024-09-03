@@ -51,7 +51,7 @@ export default function Floors({
       </Box>
       <Divider orientation="horizontal" sx={{ mt: 2 }} />
       <Box sx={{ paddingX: 2, paddingY: 1 }}>
-        <Typography variant="h5">Call buttons</Typography>
+        <Typography variant="h5">Elevator buttons</Typography>
         <Box sx={{ paddingY: 1, display: 'flex', gap: 1 }}>
           <Button
             variant="outlined"

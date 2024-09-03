@@ -35,6 +35,9 @@ export default function EventLogs({ buildingId }: EventLogsProps) {
 
   useEffect(() => {
     dispatch(getEventLogs({ buildingId }));
+  }, [buildingId, dispatch]);
+
+  useEffect(() => {
     if (!(lifts.length > 0)) {
       dispatch(getLifts({ buildingId }));
     }
@@ -42,7 +45,7 @@ export default function EventLogs({ buildingId }: EventLogsProps) {
 
   useSubscription(`/topic/${buildingId}/event-log`, (message) => {
     const eventLog: EventLog = JSON.parse(message.body);
-    console.log(eventLog);
+    // console.log(eventLog);
     dispatch(addEventLog(eventLog));
   });
 
