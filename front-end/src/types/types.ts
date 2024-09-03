@@ -36,6 +36,19 @@ export enum LiftRequestDirection {
   DOWN = 'DOWN',
 }
 
+export enum EventType {
+  FLOOR_REQUEST = 'FLOOR_REQUEST',
+  FLOOR_STOP_ADD = 'FLOOR_STOP_ADD',
+}
+
+export type EventLog = {
+  id: string;
+  floorId: string;
+  liftId: string;
+  eventType: string;
+  createdDate: string;
+};
+
 // possible redux states
 export type LoadingState = {
   status: 'loading';
