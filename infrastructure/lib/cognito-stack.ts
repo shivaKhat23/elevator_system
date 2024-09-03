@@ -34,7 +34,7 @@ export class CognitoStack extends InfraBaseStack {
         "cognito-user-pool"
       ),
       deletionProtection: true,
-      selfSignUpEnabled: true,
+      selfSignUpEnabled: false,
       signInCaseSensitive: true,
       standardAttributes: {
         email: {
