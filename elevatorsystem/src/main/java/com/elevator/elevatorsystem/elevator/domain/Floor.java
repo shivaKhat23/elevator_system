@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(
         schema = Schema.ELEVATOR,
@@ -20,17 +21,14 @@ public class Floor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    @Getter
     @Setter
     private Integer number;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "building_id")
-    @Getter
     private Building building;
 
     public Floor() {

@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 @Transactional
 public class EventLogService {
-    private final String TOPIC = "/topic/%s/event-log";
     private final EventLogRepository eventLogRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final EventLogMapper eventLogMapper;
@@ -55,6 +54,7 @@ public class EventLogService {
     }
 
     private void pushEventLogUpdate(EventLog eventLog) {
+        String TOPIC = "/topic/%s/event-log";
         messagingTemplate.convertAndSend(String.format(TOPIC, eventLog.getBuildingId()), eventLogMapper.toDto(eventLog));
     }
 }

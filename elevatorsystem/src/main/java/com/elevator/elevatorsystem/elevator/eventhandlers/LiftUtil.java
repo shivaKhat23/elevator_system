@@ -46,6 +46,7 @@ public class LiftUtil {
 
                             int diff = Math.abs(valueToCheckWith - floor.getNumber());
                             // give idle more priority by reducing the diff by 0.5 ?
+                            // also take number of stops into account ?
                             return opposite ? 2 * diff : diff;
                         })).orElse(null);
     }

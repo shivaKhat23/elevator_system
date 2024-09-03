@@ -20,7 +20,7 @@ public class EventLog {
     @Getter
     private UUID id;
 
-    @Column(name = "building_id")
+    @Column(name = "building_id", nullable = false)
     @Getter
     @Setter
     private String buildingId;
