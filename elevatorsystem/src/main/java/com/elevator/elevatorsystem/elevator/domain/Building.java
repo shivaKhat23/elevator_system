@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(schema = Schema.ELEVATOR, name = "building")
 @EqualsAndHashCode
@@ -16,11 +17,9 @@ public class Building {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    @Getter
     @Setter
     private String name;
 

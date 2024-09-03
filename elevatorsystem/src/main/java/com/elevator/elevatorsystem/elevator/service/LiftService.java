@@ -27,14 +27,17 @@ public class LiftService {
         this.eventPublisher = eventPublisher;
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public List<Lift> getLiftsForBuilding(UUID buildingId) {
         return liftRepository.findAllByBuildingId(buildingId);
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public Lift saveLift(Lift lift) {
         return liftRepository.save(lift);
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public Optional<Lift> getLiftById(UUID id) {
         return liftRepository.findById(id);
     }

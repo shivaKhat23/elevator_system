@@ -7,12 +7,12 @@ import org.springframework.modulith.core.ApplicationModules;
 
 @SpringBootTest
 @Import(TestContainersConfiguration.class)
-class ElevatorsystemApplicationTests {
+class ElevatorSystemApplicationTests {
 
 
     @Test
     void contextLoads() {
-        var modules = ApplicationModules.of(ElevatorsystemApplication.class);
+        var modules = ApplicationModules.of(ElevatorSystemApplication.class);
         modules.verify();
     }
 
