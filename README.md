@@ -18,6 +18,7 @@
 - Spring Boot 3
 - Spring Data JPA
 - [Spring Modulith](https://docs.spring.io/spring-modulith/reference/)
+  - String Modulith is used to isolate the event log and elevator modules from each other.
 - [STOMP Over WebSocket](https://jmesnil.net/stomp-websocket/doc/)
   - [Article on this topic](https://hpcodes.medium.com/send-messages-from-spring-boot-backend-to-reactjs-app-using-websocket-4120f6979c9b)
 - PostgreSQL
