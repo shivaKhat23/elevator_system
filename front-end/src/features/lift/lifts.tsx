@@ -22,6 +22,12 @@ export default function Lifts({
   isAdminView = false,
 }: LiftsProps) {
   const lifts = useAppSelector(selectLifts) ?? [];
+  const liftsSorted = [...lifts].sort((a, b) => {
+    return a.name.localeCompare(b.name, undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
+  });
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -36,7 +42,7 @@ export default function Lifts({
 
   return (
     <Box sx={{ pt: 7.5, px: 2, display: 'flex', gap: 2 }}>
-      {lifts.map((lift) => (
+      {liftsSorted.map((lift) => (
         <LiftItem
           buildingId={buildingId}
           key={lift.id}

@@ -96,7 +96,7 @@ VALUES ('00000000-0000-0000-0000-000000000022', 'Lift B2', 'IDLE',
 
 -- Insert into the 'building' table
 INSERT INTO elevator."building" (id, name)
-VALUES ('00000000-0000-0000-0000-000000000003', 'Building 2');
+VALUES ('00000000-0000-0000-0000-000000000003', 'Building 3');
 
 -- Insert into the 'floor' table for 100 floors in 'Building 2'
 DO
@@ -110,24 +110,24 @@ END $$;
 
 -- Insert the first lift into the 'lift' table for 'Building 3'
 INSERT INTO elevator."lift" (id, name, status, floor_id, building_id)
-VALUES ('00000000-0000-0000-0000-000000000031', 'Lift B1', 'IDLE',
-        (SELECT id FROM elevator."floor" WHERE number = 1 AND building_id = '00000000-0000-0000-0000-000000000003'),
-        '00000000-0000-0000-0000-0000000000023');
-
--- Insert the second lift into the 'lift' table for 'Building 3'
-INSERT INTO elevator."lift" (id, name, status, floor_id, building_id)
-VALUES ('00000000-0000-0000-0000-000000000032', 'Lift B2', 'IDLE',
+VALUES ('00000000-0000-0000-0000-000000000031', 'Lift C1', 'IDLE',
         (SELECT id FROM elevator."floor" WHERE number = 1 AND building_id = '00000000-0000-0000-0000-000000000003'),
         '00000000-0000-0000-0000-000000000003');
 
 -- Insert the second lift into the 'lift' table for 'Building 3'
 INSERT INTO elevator."lift" (id, name, status, floor_id, building_id)
-VALUES ('00000000-0000-0000-0000-000000000033', 'Lift B2', 'IDLE',
+VALUES ('00000000-0000-0000-0000-000000000032', 'Lift C2', 'IDLE',
         (SELECT id FROM elevator."floor" WHERE number = 1 AND building_id = '00000000-0000-0000-0000-000000000003'),
         '00000000-0000-0000-0000-000000000003');
 
 -- Insert the second lift into the 'lift' table for 'Building 3'
 INSERT INTO elevator."lift" (id, name, status, floor_id, building_id)
-VALUES ('00000000-0000-0000-0000-000000000034', 'Lift B2', 'IDLE',
+VALUES ('00000000-0000-0000-0000-000000000033', 'Lift C3', 'IDLE',
+        (SELECT id FROM elevator."floor" WHERE number = 1 AND building_id = '00000000-0000-0000-0000-000000000003'),
+        '00000000-0000-0000-0000-000000000003');
+
+-- Insert the second lift into the 'lift' table for 'Building 3'
+INSERT INTO elevator."lift" (id, name, status, floor_id, building_id)
+VALUES ('00000000-0000-0000-0000-000000000034', 'Lift C4', 'IDLE',
         (SELECT id FROM elevator."floor" WHERE number = 1 AND building_id = '00000000-0000-0000-0000-000000000003'),
         '00000000-0000-0000-0000-000000000003');
