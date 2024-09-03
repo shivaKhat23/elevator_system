@@ -54,8 +54,17 @@
 #### Video
 
 ##### Example with 1 Lift
+
 [![System with one lift](https://github.com/user-attachments/assets/0d5c3171-1963-4c15-903e-7858010db802)](https://github.com/user-attachments/assets/0d5c3171-1963-4c15-903e-7858010db802)
 
 ##### Example with 2 Lift
+
 [![System with 2 lift](https://github.com/user-attachments/assets/a1ee2afc-b6d2-44bf-b30f-9f8bc8054caa)](https://github.com/user-attachments/assets/a1ee2afc-b6d2-44bf-b30f-9f8bc8054caa)
 
+#### General flow description
+
+- Typically, interactions between the front-end and back-end are handled through a RESTful API.
+- However, for actions related to the elevator, an asynchronous event-driven approach is employed.
+  - This approach enables real-time updates on the elevator's status.
+
+![Event Driven flow](./media/websocket_flow.webp)
