@@ -1,10 +1,11 @@
 package com.elevator.elevatorsystem.elevator.eventhandlers;
 
-import com.elevator.elevatorsystem.elevator.event.LiftRequestDirection;
 import com.elevator.elevatorsystem.elevator.domain.Floor;
 import com.elevator.elevatorsystem.elevator.domain.Lift;
 import com.elevator.elevatorsystem.elevator.domain.LiftStatus;
+import com.elevator.elevatorsystem.elevator.event.LiftRequestDirection;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -171,6 +172,49 @@ class LiftUtilTest {
 
         // lift 1 is the nearest and idle
         Assertions.assertEquals(lift3, selectedLift);
+    }
+
+    @Test
+    @Ignore
+    void findOptimalLift_case8() {
+
+        // 1st floor idle
+        lift1 = new Lift();
+        lift1.setName("Lift1");
+        lift1.setCurrentFloor(floorList.getFirst());
+        lift1.setStatus(LiftStatus.IDLE);
+
+        // 5th floor -> 50th floor
+        // but, will go down
+        lift2 = new Lift();
+        lift2.setName("Lift2");
+        lift2.setCurrentFloor(floorList.get(4));
+        lift2.setStatus(LiftStatus.MOVING_UP);
+        lift2.addStop(floorList.get(49));
+
+        // 1st floor idle
+        lift3 = new Lift();
+        lift3.setName("Lift3");
+        lift3.setCurrentFloor(floorList.getFirst());
+        lift3.setStatus(LiftStatus.IDLE);
+
+        // 1st floor idle
+        lift4 = new Lift();
+        lift4.setName("Lift4");
+        lift4.setCurrentFloor(floorList.getFirst());
+        lift4.setStatus(LiftStatus.IDLE);
+
+        lifts = List.of(lift1, lift2, lift3, lift4);
+
+        // floor 60, going up
+        Floor requestFromFloor = floorList.get(59);
+        LiftRequestDirection liftRequestDirection = LiftRequestDirection.UP;
+        Lift selectedLift = LiftUtil.findOptimalLift(lifts, requestFromFloor, liftRequestDirection);
+
+        log.info("selected lift: {}", selectedLift);
+
+        // lift 1 is the nearest and idle
+        Assertions.assertNotEquals(lift2, selectedLift);
     }
 
 

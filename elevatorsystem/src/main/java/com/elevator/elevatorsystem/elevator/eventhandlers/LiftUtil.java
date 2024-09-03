@@ -31,6 +31,12 @@ public class LiftUtil {
          * If the lift is moving in the same direction or is idle, calculate the difference with the current floor of the lift.
          * If the lift is moving in the opposite direction, calculate the difference with the furthest destination floor of the lift.
          * also, if it is opposite, diff is doubled
+         *
+         *
+         * TODO: Consider the lift's intended direction as well.
+         * To achieve this, additional information needs to be stored for each stop, such as whether it's a REQUEST or DESTINATION stop.
+         * For example, check test case 8.
+         * Currently, an idle lift is given higher priority, but this may sometimes result in undesirable outcomes.
          */
         return lifts
                 .stream().min(Comparator
@@ -45,9 +51,13 @@ public class LiftUtil {
                             }
 
                             int diff = Math.abs(valueToCheckWith - floor.getNumber());
-                            // give idle more priority by reducing the diff by 0.5 ?
+                            // give idle more priority by reducing the diff by 0.5
+                            if (liftInfo.status == LiftStatus.IDLE) {
+                                return (int) (0.5 * diff);
+                            }
+
                             // also take number of stops into account ?
-                            return opposite ? 2 * diff : diff;
+                            return opposite ? 4 * diff : diff;
                         })).orElse(null);
     }
 
