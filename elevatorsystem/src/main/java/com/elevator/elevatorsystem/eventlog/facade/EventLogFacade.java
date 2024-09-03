@@ -1,6 +1,7 @@
 package com.elevator.elevatorsystem.eventlog.facade;
 
-import com.elevator.elevatorsystem.eventlog.controller.dto.EventsLogDto;
+import com.elevator.elevatorsystem.common.dto.ListDto;
+import com.elevator.elevatorsystem.eventlog.controller.dto.EventLogDto;
 import com.elevator.elevatorsystem.eventlog.controller.mapper.EventLogMapper;
 import com.elevator.elevatorsystem.eventlog.service.EventLogService;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ public class EventLogFacade {
         this.eventLogService = eventLogService;
     }
 
-    public EventsLogDto getEventLogs(String buildingId) {
-        return new EventsLogDto(
+    public ListDto<EventLogDto> getEventLogs(String buildingId) {
+        return new ListDto<>(
                 eventLogMapper.toDto(eventLogService.findAll(buildingId))
         );
     }

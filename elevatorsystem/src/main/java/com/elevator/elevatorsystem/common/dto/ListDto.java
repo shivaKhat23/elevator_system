@@ -1,4 +1,4 @@
-package com.elevator.elevatorsystem.elevator.controller.dto;
+package com.elevator.elevatorsystem.common.dto;
 
 import lombok.Data;
 

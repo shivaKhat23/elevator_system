@@ -1,4 +1,4 @@
-package com.elevator.elevatorsystem.config;
+package com.elevator.elevatorsystem.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

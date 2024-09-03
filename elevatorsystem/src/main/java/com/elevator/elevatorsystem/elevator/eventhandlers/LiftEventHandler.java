@@ -1,19 +1,18 @@
 package com.elevator.elevatorsystem.elevator.eventhandlers;
 
-import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestDirection;
-import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestEvent;
-import com.elevator.elevatorsystem.elevator.controller.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.elevator.controller.mapper.LiftMapper;
 import com.elevator.elevatorsystem.elevator.domain.Floor;
 import com.elevator.elevatorsystem.elevator.domain.Lift;
 import com.elevator.elevatorsystem.elevator.domain.LiftStatus;
+import com.elevator.elevatorsystem.elevator.event.LiftRequestDirection;
+import com.elevator.elevatorsystem.elevator.event.LiftRequestEvent;
+import com.elevator.elevatorsystem.elevator.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.elevator.service.FloorService;
 import com.elevator.elevatorsystem.elevator.service.LiftService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -39,8 +38,7 @@ public class LiftEventHandler {
         this.liftMapper = liftMapper;
     }
 
-    @Async
-    @EventListener
+    @ApplicationModuleListener()
     void handleLiftStopAdd(LiftStopAddEvent event) throws InterruptedException {
         log.info("Handling LiftStopAddEvent: {} at thread: {}", event, Thread.currentThread());
         Floor floor = getFloorFromDB(event.floorId());
@@ -74,8 +72,7 @@ public class LiftEventHandler {
         return floorOptional.get();
     }
 
-    @Async
-    @EventListener
+    @ApplicationModuleListener
     void handleLiftRequest(LiftRequestEvent liftRequestEvent) throws InterruptedException {
         log.info("Handling lift request: {} at thread: {}", liftRequestEvent, Thread.currentThread());
 
