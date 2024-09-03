@@ -1,6 +1,7 @@
 package com.elevator.elevatorsystem.eventlog.controller;
 
-import com.elevator.elevatorsystem.eventlog.controller.dto.EventsLogDto;
+import com.elevator.elevatorsystem.common.dto.ListDto;
+import com.elevator.elevatorsystem.eventlog.controller.dto.EventLogDto;
 import com.elevator.elevatorsystem.eventlog.facade.EventLogFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ public class EventLogController {
     }
 
     @GetMapping
-    private ResponseEntity<EventsLogDto> getEventLogs(@PathVariable String buildingId) {
+    private ResponseEntity<ListDto<EventLogDto>> getEventLogs(@PathVariable String buildingId) {
         return ResponseEntity.ok(eventLogFacade.getEventLogs(buildingId));
     }
 }

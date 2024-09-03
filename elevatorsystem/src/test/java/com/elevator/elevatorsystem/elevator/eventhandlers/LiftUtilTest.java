@@ -1,6 +1,6 @@
 package com.elevator.elevatorsystem.elevator.eventhandlers;
 
-import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestDirection;
+import com.elevator.elevatorsystem.elevator.event.LiftRequestDirection;
 import com.elevator.elevatorsystem.elevator.domain.Floor;
 import com.elevator.elevatorsystem.elevator.domain.Lift;
 import com.elevator.elevatorsystem.elevator.domain.LiftStatus;

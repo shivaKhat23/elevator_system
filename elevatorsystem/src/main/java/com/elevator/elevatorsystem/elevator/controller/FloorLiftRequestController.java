@@ -22,7 +22,7 @@ public class FloorLiftRequestController {
 
     @PostMapping
     public ResponseEntity<Void> performLiftRequest(@PathVariable String floorId, @RequestBody LiftRequestedDto liftRequestedDto) {
-        floorFacade.performListRequest(UUID.fromString(floorId), liftRequestedDto);
+        floorFacade.performLiftRequest(UUID.fromString(floorId), liftRequestedDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

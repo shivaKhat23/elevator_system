@@ -1,4 +1,4 @@
-package com.elevator.elevatorsystem.elevator.controller.event;
+package com.elevator.elevatorsystem.elevator.event;
 
 import java.util.UUID;
 

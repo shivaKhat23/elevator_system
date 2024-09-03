@@ -1,7 +1,7 @@
 package com.elevator.elevatorsystem.elevator.controller;
 
 import com.elevator.elevatorsystem.elevator.controller.dto.BuildingDto;
-import com.elevator.elevatorsystem.elevator.controller.dto.ListDto;
+import com.elevator.elevatorsystem.common.dto.ListDto;
 import com.elevator.elevatorsystem.elevator.facade.BuildingFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

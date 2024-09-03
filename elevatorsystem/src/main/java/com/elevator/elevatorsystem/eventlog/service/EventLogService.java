@@ -1,16 +1,15 @@
 package com.elevator.elevatorsystem.eventlog.service;
 
-import com.elevator.elevatorsystem.elevator.controller.event.LiftRequestEvent;
-import com.elevator.elevatorsystem.elevator.controller.event.LiftStopAddEvent;
+import com.elevator.elevatorsystem.elevator.event.LiftRequestEvent;
+import com.elevator.elevatorsystem.elevator.event.LiftStopAddEvent;
 import com.elevator.elevatorsystem.eventlog.controller.mapper.EventLogMapper;
 import com.elevator.elevatorsystem.eventlog.domain.EventLog;
 import com.elevator.elevatorsystem.eventlog.domain.EventType;
 import com.elevator.elevatorsystem.eventlog.repository.EventLogRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +33,7 @@ public class EventLogService {
         return eventLogRepository.findAllByBuildingIdOrderByCreatedDateDesc(buildingId);
     }
 
-    @Async
-    @EventListener
+    @ApplicationModuleListener
     public void handleLiftRequest(LiftRequestEvent event) {
         EventLog eventLog = new EventLog();
         eventLog.setBuildingId(event.buildingId().toString());
@@ -45,8 +43,7 @@ public class EventLogService {
         pushEventLogUpdate(eventLog);
     }
 
-    @Async
-    @EventListener
+    @ApplicationModuleListener
     public void handleStopAddEvent(LiftStopAddEvent event) {
         EventLog eventLog = new EventLog();
         eventLog.setEventType(EventType.FLOOR_STOP_ADD);
