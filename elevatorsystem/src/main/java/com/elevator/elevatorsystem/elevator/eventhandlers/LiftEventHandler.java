@@ -113,7 +113,7 @@ public class LiftEventHandler {
             optimalLiftLocks.remove(buildingId);
         }
         if (optimalLift == null) {
-            // Normally, it will always return lift, unless there is no lift available in the Building
+            // Currently, this will not happen, because we don't consider the future intention of the request
             log.warn("No lift available for building at the moment");
             return;
         }
