@@ -1,4 +1,6 @@
 using ElevatorSystemDotNet.Data;
+using ElevatorSystemDotNet.Data.Repository;
+using ElevatorSystemDotNet.service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,15 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddControllers();
+
+// repositories
+builder.Services.AddScoped<BuildingRepository, BuildingRepository>();
+
+// services
+builder.Services.AddScoped<BuildingService, BuildingService>();
+
+// mapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 builder.Services.AddEndpointsApiExplorer();
