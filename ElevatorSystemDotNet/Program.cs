@@ -1,6 +1,6 @@
 using ElevatorSystemDotNet.Data;
 using ElevatorSystemDotNet.Data.Repository;
-using ElevatorSystemDotNet.service;
+using ElevatorSystemDotNet.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
