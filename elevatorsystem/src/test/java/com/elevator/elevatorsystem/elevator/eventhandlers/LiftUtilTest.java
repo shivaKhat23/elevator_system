@@ -217,5 +217,12 @@ class LiftUtilTest {
         Assertions.assertNotEquals(lift2, selectedLift);
     }
 
+    @Test
+    public void test (){
+        int a = 1;
+        if(a = 10){
+            System.out.println(a);
+        }
+    }
 
 }
