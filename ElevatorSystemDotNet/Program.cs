@@ -16,10 +16,12 @@ builder.Services.AddControllers();
 // repositories
 builder.Services.AddScoped<BuildingRepository, BuildingRepository>();
 builder.Services.AddScoped<FloorRepository, FloorRepository>();
+builder.Services.AddScoped<LiftRespository, LiftRespository>();
 
 // services
 builder.Services.AddScoped<BuildingService, BuildingService>();
 builder.Services.AddScoped<FloorService, FloorService>();
+builder.Services.AddScoped<LiftService, LiftService>();
 
 // mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

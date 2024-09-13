@@ -15,11 +15,10 @@ public class BuildingFloorsController(FloorService floorService, IMapper mapper)
     private IMapper Mapper { get; } = mapper;
 
     [HttpGet]
-    public async Task<ActionResult<ListDto<FloorDto>>> getFloors(Guid buildingId)
+    public async Task<ActionResult<ListDto<FloorDto>>> GetFloors(Guid buildingId)
     {
-        Console.Write(buildingId);
         List<Floor> floors = await FloorService.GetAllByBuildingId(buildingId);
-        List<FloorDto> floorDtos = floors.Select(f => Mapper.Map<FloorDto>(f)).ToList<FloorDto>();
+        List<FloorDto> floorDtos = floors.Select(Mapper.Map<FloorDto>).ToList<FloorDto>();
         return Ok(new ListDto<FloorDto>(floorDtos));
     }
 }

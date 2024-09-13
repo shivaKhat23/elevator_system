@@ -4,24 +4,36 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElevatorSystemDotNet.Data.Domain;
 
-public class Floor
+public class Lift
 {
+
     [Key]
     [Column("id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [Column("number")]
+    [Column("name")]
     [Required]
-    public int Number { get; set; }
+    public string Name { get; set; } = null!;
+
+    [Column("status")]
+    [Required]
+    public string Status { get; set; } = null!;
+
+    [Column("floor_id")]
+    [Required]
+    public Guid CurrentFloorId { get; set; }
 
     [Column("building_id")]
     [Required]
     public Guid BuildingId { get; set; }
 
-    public Building Building { get; set; } = null!;
+    [ForeignKey("CurrentFloorId")]
+    public Floor CurrentFloor { get; set; } = null!;
 
-    public List<Lift> Lifts { get; set; } = [];
+    [ForeignKey("BuildingId")]
+    public Building? Building { get; set; }
+
 
     public List<LiftToFloorStop> LiftStops { get; set; } = [];
 
