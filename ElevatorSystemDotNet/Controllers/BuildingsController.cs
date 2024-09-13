@@ -9,7 +9,7 @@ namespace ElevatorSystemDotNet.Controllers;
 
 [ApiController]
 [Route("api/buildings")]
-public class BuildingsController(BuildingService buildingService, IMapper mapper)
+public class BuildingsController(BuildingService buildingService, IMapper mapper) : ControllerBase
 {
 
     private BuildingService BuildingService { get; } = buildingService;
@@ -24,7 +24,7 @@ public class BuildingsController(BuildingService buildingService, IMapper mapper
         {
             buildingDtos.Add(Mapper.Map<BuildingDto>(b));
         }
-        return new ListDto<BuildingDto>(buildingDtos);
+        return Ok(new ListDto<BuildingDto>(buildingDtos));
     }
 
 }

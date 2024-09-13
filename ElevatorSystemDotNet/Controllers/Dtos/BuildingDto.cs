@@ -6,9 +6,9 @@ namespace ElevatorSystemDotNet.Controllers.Dtos;
 public class BuildingDto
 {
 
-    [JsonPropertyName(name: "id")]
+    [JsonPropertyName("id")]
     public string? Id { get; set; }
 
-    [JsonPropertyName(name: "name")]
+    [JsonPropertyName("name")]
     public string? Name { get; set; }
 }

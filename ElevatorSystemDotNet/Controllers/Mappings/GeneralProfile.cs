@@ -11,6 +11,7 @@ public class GeneralProfile : Profile
     public GeneralProfile()
     {
         CreateMap<Building, BuildingDto>();
+        CreateMap<Floor, FloorDto>();
     }
 
 }

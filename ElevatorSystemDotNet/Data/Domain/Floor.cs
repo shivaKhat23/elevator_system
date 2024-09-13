@@ -1,13 +1,23 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElevatorSystemDotNet.Data.Domain;
 
 public class Floor
 {
+    [Key]
+    [Column("id")]
     public Guid Id { get; set; }
-    public int Number { get; set; }
-    // public Guid BuildingId { get; set; }
 
-    // public Building Building { get; set; } = building;
+    [Column("number")]
+    [Required]
+    public int Number { get; set; }
+
+    [Column("building_id")]
+    [Required]
+    public Guid BuildingId { get; set; }
+
+    public Building Building { get; set; } = null!;
 
 }
