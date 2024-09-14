@@ -76,3 +76,9 @@ following these steps will enable you to effectively debug your React Native app
 6. **Install Development Build on your Android Phone and Connect to Metro Server:** Install the development build of your React Native application on your Android phone. Once installed, ensure that your Android device is connected to the same network as your computer. Then, open the development build of your application on your device and navigate to the settings where you can specify the Metro server's connection URI. Set the connection URI to `http://localhost:8081`. This configuration allows your Android device to fetch the JavaScript bundle from the Metro server running on your computer, even if the device is offline.
 
 7. **Additional Information:** For further details and troubleshooting tips, you can refer to [this Stack Overflow post](https://stackoverflow.com/questions/62952781/how-to-simulate-offline-mode-in-expo-app-during-development). It provides insights into simulating offline mode in Expo apps during development.
+
+## Ngrok
+
+```sh
+ngrok http --domain=mastiff-definite-coyote.ngrok-free.app 8081
+```
