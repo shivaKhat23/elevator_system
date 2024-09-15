@@ -65,6 +65,13 @@ export default function FloorView() {
     },
   );
 
+  const liftsSorted = [...lifts].sort((a, b) => {
+    return a.name.localeCompare(b.name, undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
+  });
+
   const { mutate } = useMutation({
     mutationFn: (direction: LiftRequestDirection) => requestLift(floorId, direction),
   });
@@ -94,7 +101,7 @@ export default function FloorView() {
       <View style={styles.divider} />
       <Text style={styles.elevatorTitle}>Elevators</Text>
       <View style={styles.elevatorContainer}>
-        {lifts.map((lift) => (
+        {liftsSorted.map((lift) => (
           <LiftItem lift={lift} currentFloorNumber={floorNumber} key={lift.id} />
         ))}
       </View>
