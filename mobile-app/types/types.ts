@@ -4,11 +4,33 @@ import type {
 } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
-  Elevator: undefined;
+  ElevatorHome: undefined;
+  Admin: undefined;
 };
 
-export type ElevatorScreenProps = NativeStackScreenProps<RootStackParamList, 'Elevator'>;
-export type ElevatorScreenNavigationProp = ElevatorScreenProps['navigation'];
+export type ElevatorHomeScreenProps = NativeStackScreenProps<RootStackParamList, 'ElevatorHome'>;
+export type ElevatorHomeScreenNavigationProps = ElevatorHomeScreenProps['navigation'];
+export type ElevatorHomeScreenRouteProps = ElevatorHomeScreenProps['route'];
+
+export type AdminScreenProps = NativeStackScreenProps<RootStackParamList, 'Admin'>;
+export type AdminScreenNavigationProps = AdminScreenProps['navigation'];
+export type AdminScreenRouteProps = AdminScreenProps['route'];
+
+export type ElevatorStackParamList = {
+  Building: undefined;
+  Floor: { buildingId: string; buildingName: string };
+  Elevator: { buildingId: string; buildingName: string; floorId: string; floorNumber: number };
+};
+
+export type BuildingScreenProps = NativeStackScreenProps<ElevatorStackParamList, 'Building'>;
+export type BuildingScreenNavigationProps = BuildingScreenProps['navigation'];
+
+export type FloorScreenprops = NativeStackScreenProps<ElevatorStackParamList, 'Floor'>;
+export type FloorScreenNavigationProps = FloorScreenprops['navigation'];
+export type FloorScreenRouteProps = FloorScreenprops['route'];
+
+export type ElevatorScreenProps = NativeStackScreenProps<ElevatorStackParamList, 'Elevator'>;
+export type ElevatorScreenNavigationProps = ElevatorScreenProps['navigation'];
 export type ElevatorScreenRouteProps = ElevatorScreenProps['route'];
 
 // API types

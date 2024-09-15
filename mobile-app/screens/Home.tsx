@@ -1,17 +1,18 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text, View } from 'react-native';
 import { RootStackParamList } from '../types/types';
-import Elevator from './elevator/Elevator';
+import Admin from './admin/Admin';
+import Elevator from './elevator/ElevatorHome';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function Home() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Elevator" component={Elevator} />
-      </Stack.Navigator>
+      <Tab.Navigator initialRouteName="ElevatorHome" screenOptions={{ headerShown: false }}>
+        <Tab.Screen name="ElevatorHome" component={Elevator} />
+        <Tab.Screen name="Admin" component={Admin} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
