@@ -1,15 +1,17 @@
-import { getLifts } from '@/services/api';
+import PressableCard from '@/components/PressableCard';
+import { getLifts, requestLift } from '@/services/api';
 import {
   ElevatorScreenNavigationProps,
   ElevatorScreenRouteProps,
   Lift,
+  LiftRequestDirection,
   LiftStatus,
 } from '@/types/types';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 
 type LiftIconProps = {
   status: LiftStatus;
@@ -59,9 +61,13 @@ export default function FloorView() {
     () => getLifts(buildingId),
     {
       enabled: !!buildingId,
-      //   refetchInterval: 1000,
+      refetchInterval: 1000,
     },
   );
+
+  const { mutate } = useMutation({
+    mutationFn: (direction: LiftRequestDirection) => requestLift(floorId, direction),
+  });
 
   function gotoBuildingSelect() {
     navigation.navigate('Building');
@@ -85,11 +91,22 @@ export default function FloorView() {
           <Text style={styles.floorHeader}>Floor : {floorNumber}</Text>
         </Pressable>
       </View>
-      <Text style={styles.elevatorTitle}>Elevator view</Text>
+      <View style={styles.divider} />
+      <Text style={styles.elevatorTitle}>Elevators</Text>
       <View style={styles.elevatorContainer}>
         {lifts.map((lift) => (
           <LiftItem lift={lift} currentFloorNumber={floorNumber} key={lift.id} />
         ))}
+      </View>
+      <View style={styles.divider} />
+      <Text style={styles.elevatorTitle}>Elevator Request Buttons</Text>
+      <View style={styles.floorButtonContainer}>
+        <PressableCard onPress={() => mutate(LiftRequestDirection.UP)}>
+          <AntDesign name="arrowup" size={40} color="black" />
+        </PressableCard>
+        <PressableCard onPress={() => mutate(LiftRequestDirection.DOWN)}>
+          <AntDesign name="arrowdown" size={40} color="black" />
+        </PressableCard>
       </View>
     </View>
   );
@@ -136,6 +153,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 5,
+    flexBasis: '25%',
   },
   elevatorItem: {
     flexBasis: '45%',
@@ -160,5 +178,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 24,
     paddingHorizontal: 10,
+  },
+  floorButtonContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 });
