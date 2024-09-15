@@ -1,7 +1,7 @@
 import { getFloors } from '@/services/api';
 import { Floor, FloorScreenNavigationProps, FloorScreenRouteProps } from '@/types/types';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 export default function FloorSelect() {

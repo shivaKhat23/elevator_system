@@ -1,7 +1,7 @@
 import { getBuildings } from '@/services/api';
 import { Building, BuildingScreenNavigationProps } from '@/types/types';
 import { useNavigation } from '@react-navigation/native';
-import { ActivityIndicator, ScrollView, Text, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useQuery } from 'react-query';
 
 export default function BuildingSelect() {

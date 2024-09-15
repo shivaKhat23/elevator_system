@@ -1,16 +1,15 @@
 import { getLifts } from '@/services/api';
 import {
-  ElevatorHomeScreenNavigationProps,
   ElevatorScreenNavigationProps,
   ElevatorScreenRouteProps,
   Lift,
   LiftStatus,
 } from '@/types/types';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { useQuery } from 'react-query';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useQuery } from 'react-query';
 
 type LiftIconProps = {
   status: LiftStatus;
